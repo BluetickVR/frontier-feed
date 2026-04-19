@@ -1,8 +1,10 @@
 from feed.fetchers.base import BaseFetcher
 from feed.fetchers.github_trending import GitHubTrendingFetcher
+from feed.fetchers.watchlist_twitter import WatchlistTwitterFetcher
 
 REGISTRY: dict[str, type[BaseFetcher]] = {
     "github_trending": GitHubTrendingFetcher,
+    "watchlist_twitter": WatchlistTwitterFetcher,
 }
 
 

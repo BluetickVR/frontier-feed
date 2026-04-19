@@ -64,8 +64,9 @@ fetchers:
     enabled: false
 
   watchlist_twitter:
-    enabled: false
-    nitter_instance: https://nitter.net
+    enabled: true
+    max_tweets_per_user: 10
+    max_items_per_run: 30
 
 paths:
   state_dir: state
