@@ -128,10 +128,29 @@ def run_digest(slot: str = "morning", only: Optional[list[str]] = None,
         if not selected:
             send_text(f"🤫 quiet {slot} — nothing above threshold (fetched {len(raw)})")
         else:
+            # Two-tier push: top items as full messages, rest as compact list
+            tier1_count = n  # budget from context.yaml (6 morning, 3 evening)
+            tier1 = selected[:tier1_count]
+            tier2 = selected[tier1_count:]
+
             header = f"🔔 {slot.title()} — {len(selected)} items"
-            pushed = push_items(selected, header=header)
+            pushed = push_items(tier1, header=header)
+
+            # Tier 2: compact list of remaining items above threshold
+            if tier2:
+                import html as html_mod
+                lines = [f"<b>📋 Also above threshold ({len(tier2)} more):</b>\n"]
+                for it in tier2:
+                    lines.append(
+                        f'• <a href="{html_mod.escape(it.url)}">{html_mod.escape(it.title[:60])}</a>'
+                        f" — <i>{html_mod.escape(it.why_it_matters or '')[:50]}</i>"
+                        f" <code>{it.id}</code>"
+                    )
+                send_text("\n".join(lines), disable_preview=True)
+
             # re-log with pushed metadata
             log_items(pushed)
+            log_items(tier2)  # log tier2 as well so they're tracked
 
     # advance pointers
     now = datetime.now(timezone.utc)
