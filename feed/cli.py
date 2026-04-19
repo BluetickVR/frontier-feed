@@ -145,28 +145,34 @@ def prototypes(hours: int = typer.Option(18, help="lookback window for '!' react
 
 
 @app.command()
-def autopublish(hours: int = typer.Option(24, help="lookback window for 'p' reactions")):
-    """Draft + post tweets for items marked with 'p'."""
+def autopublish(hours: int = typer.Option(24, help="lookback window for 'p'/'l' reactions")):
+    """Draft + post tweets (p) and LinkedIn posts (l)."""
     from datetime import datetime, timedelta, timezone
-    from feed.draft import draft_tweet
-    from feed.post_twitter import post_tweet
+    from feed.draft import draft_tweet, draft_linkedin
     from feed.push import send_text
     from feed.state import load_item, reactions_since
     cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
-    rxns = [r for r in reactions_since(cutoff) if r.char == "p"]
+    rxns = [r for r in reactions_since(cutoff) if r.char in ("p", "l")]
     posted = 0
     for r in rxns:
         it = load_item(r.item_id)
         if not it:
             continue
         try:
-            text = draft_tweet(it)
-            res = post_tweet(text)
-            send_text(f"🐦 Posted tweet:\n{text}\n\n{res.get('url','')}", disable_preview=True)
+            if r.char == "p":
+                from feed.post_twitter import post_tweet
+                text = draft_tweet(it)
+                res = post_tweet(text)
+                send_text(f"🐦 Posted tweet:\n{text}\n\n{res.get('url','')}", disable_preview=True)
+            elif r.char == "l":
+                from feed.post_linkedin import post_linkedin
+                text = draft_linkedin(it)
+                res = post_linkedin(text)
+                send_text(f"💼 Posted to LinkedIn:\n{text[:500]}", disable_preview=True)
             posted += 1
         except Exception as e:
-            send_text(f"(tweet post failed for {r.item_id}: {e})")
-    typer.echo(json.dumps({"p_reactions": len(rxns), "posted": posted}, indent=2))
+            send_text(f"(post failed for {r.item_id} on {'twitter' if r.char=='p' else 'linkedin'}: {e})")
+    typer.echo(json.dumps({"reactions": len(rxns), "posted": posted}, indent=2))
 
 
 @app.command()
