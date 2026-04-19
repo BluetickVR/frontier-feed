@@ -1,0 +1,23 @@
+# fly.toml — replace <app-name> after `fly launch --no-deploy` (or hand-edit after).
+# Fly free allowance covers this shared-cpu-1x 256MB machine round-the-clock.
+
+app = "frontier-feed-webhook"
+primary_region = "bom"  # Mumbai — closest to you. Change if you prefer.
+
+[build]
+
+[env]
+  PORT = "8080"
+  GITHUB_BRANCH = "main"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "off"   # always-on so Telegram webhooks never miss
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256

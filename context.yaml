@@ -1,0 +1,88 @@
+# Who you are and what signal is worth your attention.
+# Used to rank items (via LLM) and to tailor follow-up dossiers.
+
+identity:
+  name: Anshul Padyal
+  role: Founder/CTO, PropViz (real estate tech, acquired by MagicBricks Dec 2024)
+  goal: Stay current on the AI frontier — tools, workflows, people, repos — so
+    our product roadmap and internal workflows compound faster than competitors'.
+
+# High-level topic buckets, in rough priority order.
+# Scorer uses these to compute relevance.
+topics:
+  top_priority:
+    - Claude / Anthropic ecosystem (SDK, MCP, skills, Claude Code, routines)
+    - Agent frameworks and agent infra (LangGraph, CrewAI, Mastra, AgentKit)
+    - AI coding tools (Cursor, Windsurf, Cline, Aider, Continue)
+    - Voice AI (Realtime APIs, LiveKit, Moshi, Deepgram, Ultravox)
+    - MCP servers and integrations
+
+  high:
+    - Foundation model releases (Anthropic, OpenAI, Google, Meta, Mistral, DeepSeek, Qwen)
+    - Eval + benchmarks for agent/coding quality
+    - Prompt + context engineering (cache, skills, tool design)
+    - Agent SDKs and harnesses
+    - Retrieval / vector / embeddings infra
+    - Local inference (Ollama, llama.cpp, MLX)
+
+  interesting:
+    - AI product launches from notable founders
+    - New OSS repos trending in AI topic
+    - Applied AI case studies (esp. sales, real estate, industry-vertical SaaS)
+    - Browser automation + agent-operated tooling
+
+  deprioritize:
+    - Pure NLP research papers with no applied angle
+    - Generic LLM listicles and prompt packs
+    - Crypto/AI token plays
+    - AI ethics position pieces with no code
+
+# People whose output is almost always worth reading.
+# Watchlist fetcher will poll these.
+watchlist:
+  research_and_builders:
+    - karpathy
+    - simonw
+    - jeremyphoward
+    - svpino
+    - hwchase17
+    - erikschluntz
+    - alexalbert__
+    - skirano
+    - NousResearch
+    - Teknium1
+    - mckaywrigley
+    - swyx
+    - jxnlco
+    - omarsar0
+    - _philschmid
+    - ClementDelangue
+
+  company_blogs:
+    - https://www.anthropic.com/news
+    - https://openai.com/blog/rss.xml
+    - https://deepmind.google/blog/rss.xml
+    - https://blog.google/technology/ai/rss
+    - https://huggingface.co/blog/feed.xml
+    - https://mistral.ai/news/
+
+  tool_changelogs:
+    - https://github.com/anthropics/claude-code/releases.atom
+    - https://github.com/cursor/cursor/releases.atom
+
+# Business signals (lightweight — used only to tailor follow-up dossier framing,
+# NOT to rank daily digest items). The daily digest is about the external world.
+business_filter_hints:
+  - real estate vertical AI applications
+  - voice agents for sales / call centers
+  - workflow automation for sales teams
+  - content generation for builders / marketing
+  - agent deployments in enterprise SaaS
+
+# Signal volume budget — tune these over time.
+budgets:
+  morning_push_max_items: 6
+  evening_push_max_items: 3
+  relevance_threshold: 0.55   # 0..1, items below this are dropped
+  follow_up_threshold: 0.65   # '?' items must be above this to generate a dossier
+  watchlist_high_signal: 0.70 # above this, watchlist items get pushed immediately

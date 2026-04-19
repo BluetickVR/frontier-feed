@@ -1,0 +1,75 @@
+# LLM routing + fetcher enablement.
+# Changes here don't need code edits — feed.llm and feed.digest read this.
+
+providers:
+  # Primary for cheap, high-volume tasks (summarize, classify, score)
+  groq:
+    enabled: true
+    # Token-per-minute limits are tight on free tier — prefer smaller model.
+    models:
+      summarize: llama-3.1-8b-instant      # 20k TPM free
+      classify: llama-3.1-8b-instant
+      rank: llama-3.3-70b-versatile        # 12k TPM free — use for harder scoring
+      chunk_size_tokens: 4000
+
+  gemini:
+    enabled: true
+    models:
+      fallback_chat: gemini-2.0-flash-exp   # free tier ~1500 req/day
+      embedding: text-embedding-004         # free
+    # Used when Groq rate-limits, or when Gemini's quality is better (synthesis).
+
+  anthropic:
+    enabled: false  # flip to true if you load a paid key; routines use Claude Max quota already
+    models:
+      synthesis: claude-sonnet-4-6
+
+# Routing: which provider handles which task.
+# digest uses these names; swap providers here instead of touching code.
+routes:
+  summarize: groq
+  classify: groq
+  rank: groq
+  synthesis: gemini          # dossiers + digest "why this matters" lines
+  embedding: gemini
+
+fetchers:
+  github_trending:
+    enabled: true
+    # topics=python,ai,llm,agents,mcp; languages we care about
+    topics: [ai, agents, llm, mcp, langchain]
+    languages: [python, typescript, rust]
+    since: daily                 # daily | weekly | monthly
+    max_items_per_run: 25
+
+  # Everything below disabled in Phase 1 — enable one per day in week 2.
+  hf_papers:
+    enabled: false
+    max_items_per_run: 10
+
+  arxiv:
+    enabled: false
+    categories: [cs.AI, cs.LG, cs.CL]
+    max_items_per_run: 15
+
+  company_blogs:
+    enabled: false
+
+  show_hn:
+    enabled: false
+    tags: [ai, ml, llm, agent]
+    max_items_per_run: 15
+
+  tool_changelogs:
+    enabled: false
+
+  watchlist_twitter:
+    enabled: false
+    nitter_instance: https://nitter.net
+
+paths:
+  state_dir: state
+  digests_dir: digests
+  journals_dir: journals
+  dossiers_dir: dossiers
+  strategies_dir: strategies
