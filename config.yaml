@@ -44,7 +44,7 @@ fetchers:
 
   # Everything below disabled in Phase 1 — enable one per day in week 2.
   hf_papers:
-    enabled: false
+    enabled: true
     max_items_per_run: 10
 
   arxiv:
@@ -56,12 +56,12 @@ fetchers:
     enabled: false
 
   show_hn:
-    enabled: false
+    enabled: true
     tags: [ai, ml, llm, agent]
     max_items_per_run: 15
 
   tool_changelogs:
-    enabled: false
+    enabled: true
 
   watchlist_twitter:
     enabled: true

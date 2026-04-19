@@ -116,6 +116,60 @@ def sync():
 
 
 @app.command()
+def draft(
+    item_id: str = typer.Argument(..., help="item id to draft from"),
+    platform: str = typer.Option("twitter", help="twitter | linkedin"),
+    post: bool = typer.Option(False, help="actually post it (not just draft)"),
+):
+    """Draft a Twitter/LinkedIn post from a digest item."""
+    from feed.draft import draft_from_id
+    text = draft_from_id(item_id, platform)
+    if not text:
+        typer.echo(f"item {item_id} not found", err=True)
+        raise typer.Exit(1)
+    typer.echo(f"\n--- {platform} draft ---\n{text}\n---\n")
+    if post and platform == "twitter":
+        from feed.post_twitter import post_tweet
+        res = post_tweet(text)
+        typer.echo(json.dumps(res, indent=2))
+    elif post:
+        typer.echo(f"(auto-post for {platform} not yet wired)")
+
+
+@app.command()
+def prototypes(hours: int = typer.Option(18, help="lookback window for '!' reactions")):
+    """Generate prototype plans for items marked with '!'."""
+    from feed.prototype import run_prototypes
+    res = run_prototypes(lookback_hours=hours)
+    typer.echo(json.dumps(res, indent=2))
+
+
+@app.command()
+def autopublish(hours: int = typer.Option(24, help="lookback window for 'p' reactions")):
+    """Draft + post tweets for items marked with 'p'."""
+    from datetime import datetime, timedelta, timezone
+    from feed.draft import draft_tweet
+    from feed.post_twitter import post_tweet
+    from feed.push import send_text
+    from feed.state import load_item, reactions_since
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+    rxns = [r for r in reactions_since(cutoff) if r.char == "p"]
+    posted = 0
+    for r in rxns:
+        it = load_item(r.item_id)
+        if not it:
+            continue
+        try:
+            text = draft_tweet(it)
+            res = post_tweet(text)
+            send_text(f"🐦 Posted tweet:\n{text}\n\n{res.get('url','')}", disable_preview=True)
+            posted += 1
+        except Exception as e:
+            send_text(f"(tweet post failed for {r.item_id}: {e})")
+    typer.echo(json.dumps({"p_reactions": len(rxns), "posted": posted}, indent=2))
+
+
+@app.command()
 def state():
     """Print state summary."""
     from feed.state import load_pointers, load_reactions, load_weights

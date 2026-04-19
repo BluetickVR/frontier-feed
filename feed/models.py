@@ -17,7 +17,7 @@ def stable_id(source: str, url: str) -> str:
     return f"{source}-{h}"
 
 
-ReactionChar = Literal[".", "?", "+", "-"]
+ReactionChar = Literal[".", "?", "+", "-", "!", "p"]
 ItemStatus = Literal["pending", "pushed", "read", "dug", "dismissed"]
 
 
