@@ -108,6 +108,14 @@ def poll():
 
 
 @app.command()
+def sync():
+    """Push state + today's output files to GitHub via API (no git push needed)."""
+    from feed.sync import sync_state
+    res = sync_state()
+    typer.echo(json.dumps(res, indent=2))
+
+
+@app.command()
 def state():
     """Print state summary."""
     from feed.state import load_pointers, load_reactions, load_weights
