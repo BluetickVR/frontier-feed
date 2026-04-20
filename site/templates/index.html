@@ -7,37 +7,58 @@
 <style>
   :root { --bg: #0a0a0a; --card: #141414; --border: #222; --text: #e0e0e0; --dim: #888; --accent: #4f9cf5; --high: #22c55e; --mid: #eab308; --low: #6b7280; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); max-width: 720px; margin: 0 auto; padding: 16px; }
-  h1 { font-size: 1.4rem; font-weight: 600; margin-bottom: 4px; }
-  .subtitle { color: var(--dim); font-size: 0.85rem; margin-bottom: 24px; }
-  .date-nav { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); max-width: 800px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { color: var(--dim); font-size: 0.85rem; margin-bottom: 20px; }
+
+  /* Controls bar */
+  .controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .controls label { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+  .filter-btn { background: none; border: 1px solid var(--border); color: var(--dim); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+  .sort-select { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
+  .search-input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 4px; font-size: 0.85rem; width: 180px; }
+  .search-input::placeholder { color: var(--dim); }
+  .stats { font-size: 0.75rem; color: var(--dim); margin-left: auto; }
+
+  /* Date nav */
+  .date-nav { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
   .date-nav a { color: var(--accent); text-decoration: none; font-size: 0.8rem; padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; }
   .date-nav a.active { background: var(--accent); color: #000; }
-  .audio-player { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 24px; }
+
+  /* Audio */
+  .audio-player { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 20px; }
   .audio-player h3 { font-size: 0.9rem; margin-bottom: 8px; }
-  .audio-player audio { width: 100%; }
-  .section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--dim); margin: 20px 0 12px; }
-  .item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+  .audio-player audio { width: 100%; height: 36px; }
+
+  /* Items */
+  .items-container { }
+  .item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; transition: opacity 0.15s; }
+  .item.hidden { display: none; }
   .item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-  .item-title { font-size: 0.95rem; font-weight: 500; }
+  .item-title { font-size: 0.95rem; font-weight: 500; flex: 1; }
   .item-title a { color: var(--text); text-decoration: none; }
   .item-title a:hover { color: var(--accent); }
   .score { font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
   .score-high { background: #22c55e22; color: var(--high); }
   .score-mid { background: #eab30822; color: var(--mid); }
   .score-low { background: #6b728022; color: var(--low); }
-  .item-meta { font-size: 0.8rem; color: var(--dim); margin-top: 6px; }
-  .source-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 3px; background: #ffffff10; margin-right: 6px; }
+  .item-meta { font-size: 0.8rem; color: var(--dim); margin-top: 6px; display: flex; gap: 8px; align-items: center; }
+  .source-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 3px; background: #ffffff10; }
+  .source-tag.s-github_trending { border-left: 2px solid #f0883e; }
+  .source-tag.s-watchlist_twitter { border-left: 2px solid #1d9bf0; }
+  .source-tag.s-hf_papers { border-left: 2px solid #ff9d00; }
+  .source-tag.s-show_hn { border-left: 2px solid #ff6600; }
+  .source-tag.s-github_releases { border-left: 2px solid #8b5cf6; }
   .item-why { font-size: 0.85rem; color: var(--dim); margin-top: 8px; font-style: italic; line-height: 1.4; }
-  .tier2 { opacity: 0.7; }
-  .tier2 .item { padding: 10px; }
-  .tier2 .item-title { font-size: 0.85rem; }
+  .empty-state { color: var(--dim); text-align: center; padding: 60px 0; }
   footer { text-align: center; color: var(--dim); font-size: 0.75rem; margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--border); }
 </style>
 </head>
 <body>
 <h1>Frontier Feed</h1>
-<p class="subtitle">AI & 3D intel for PropViz — curated daily</p>
+<p class="subtitle">AI & 3D intel — curated daily for PropViz</p>
 
 <div class="date-nav">
 {% for d in dates %}
@@ -54,43 +75,98 @@
 </div>
 {% endif %}
 
-{% if tier1 %}
-<div class="section-title">Top picks — {{ date_label }}</div>
-{% for item in tier1 %}
-<div class="item">
+<div class="controls">
+  <label>Source:</label>
+  <button class="filter-btn active" data-source="all">All</button>
+  <button class="filter-btn" data-source="github_trending">GitHub</button>
+  <button class="filter-btn" data-source="watchlist_twitter">Twitter</button>
+  <button class="filter-btn" data-source="hf_papers">Papers</button>
+  <button class="filter-btn" data-source="show_hn">HN</button>
+  <button class="filter-btn" data-source="github_releases">Releases</button>
+  <label style="margin-left: 12px;">Sort:</label>
+  <select class="sort-select" id="sort-by">
+    <option value="score-desc">Score ↓</option>
+    <option value="score-asc">Score ↑</option>
+    <option value="source">Source</option>
+    <option value="title">Title A-Z</option>
+  </select>
+  <input type="text" class="search-input" id="search" placeholder="Search...">
+  <span class="stats" id="stats"></span>
+</div>
+
+<div class="items-container" id="items">
+{% for item in all_items %}
+<div class="item" data-source="{{ item.source }}" data-score="{{ item.score }}" data-title="{{ item.title }}">
   <div class="item-header">
     <div class="item-title"><a href="{{ item.url }}" target="_blank">{{ item.title }}</a></div>
     <span class="score {% if item.score >= 0.8 %}score-high{% elif item.score >= 0.5 %}score-mid{% else %}score-low{% endif %}">{{ "%.0f"|format(item.score * 100) }}</span>
   </div>
   <div class="item-meta">
-    <span class="source-tag">{{ item.source }}</span>
+    <span class="source-tag s-{{ item.source }}">{{ item.source }}</span>
   </div>
   {% if item.why_it_matters %}
-  <div class="item-why">{{ item.why_it_matters[:200] }}</div>
+  <div class="item-why">{{ item.why_it_matters[:250] }}</div>
   {% endif %}
 </div>
 {% endfor %}
-{% endif %}
-
-{% if tier2 %}
-<div class="section-title tier2">Also above threshold</div>
-<div class="tier2">
-{% for item in tier2 %}
-<div class="item">
-  <div class="item-header">
-    <div class="item-title"><a href="{{ item.url }}" target="_blank">{{ item.title }}</a></div>
-    <span class="score {% if item.score >= 0.5 %}score-mid{% else %}score-low{% endif %}">{{ "%.0f"|format(item.score * 100) }}</span>
-  </div>
-  <div class="item-meta"><span class="source-tag">{{ item.source }}</span></div>
 </div>
-{% endfor %}
-</div>
-{% endif %}
 
-{% if not tier1 and not tier2 %}
-<p style="color: var(--dim); text-align: center; padding: 60px 0;">No items for this date yet.</p>
+{% if not all_items %}
+<p class="empty-state">No items for this date yet.</p>
 {% endif %}
 
 <footer>frontier-feed — auto-generated daily at 06:45 IST</footer>
+
+<script>
+const items = document.querySelectorAll('.item');
+const filterBtns = document.querySelectorAll('.filter-btn');
+const sortSelect = document.getElementById('sort-by');
+const searchInput = document.getElementById('search');
+const statsEl = document.getElementById('stats');
+const container = document.getElementById('items');
+
+let activeSource = 'all';
+
+function updateStats() {
+  const visible = document.querySelectorAll('.item:not(.hidden)').length;
+  statsEl.textContent = `${visible}/${items.length}`;
+}
+
+function applyFilters() {
+  const q = searchInput.value.toLowerCase();
+  items.forEach(el => {
+    const matchSource = activeSource === 'all' || el.dataset.source === activeSource;
+    const matchSearch = !q || el.textContent.toLowerCase().includes(q);
+    el.classList.toggle('hidden', !(matchSource && matchSearch));
+  });
+  updateStats();
+}
+
+function applySort() {
+  const val = sortSelect.value;
+  const arr = Array.from(items);
+  arr.sort((a, b) => {
+    if (val === 'score-desc') return parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
+    if (val === 'score-asc') return parseFloat(a.dataset.score) - parseFloat(b.dataset.score);
+    if (val === 'source') return a.dataset.source.localeCompare(b.dataset.source);
+    if (val === 'title') return a.dataset.title.localeCompare(b.dataset.title);
+    return 0;
+  });
+  arr.forEach(el => container.appendChild(el));
+}
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeSource = btn.dataset.source;
+    applyFilters();
+  });
+});
+
+sortSelect.addEventListener('change', () => { applySort(); applyFilters(); });
+searchInput.addEventListener('input', applyFilters);
+updateStats();
+</script>
 </body>
 </html>

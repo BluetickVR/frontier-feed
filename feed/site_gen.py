@@ -62,8 +62,7 @@ def generate_site() -> dict:
 
     for i, date_str in enumerate(sorted_dates[:14]):  # last 14 days
         day_items = by_date.get(date_str, [])
-        tier1 = [it for it in day_items if it.score >= 0.45][:8]
-        tier2 = [it for it in day_items if it.score >= 0.3 and it not in tier1]
+        all_items = [it for it in day_items if it.score > 0]
 
         # Check for audio
         audio_file = None
@@ -88,8 +87,7 @@ def generate_site() -> dict:
             })
 
         html = template.render(
-            tier1=tier1,
-            tier2=tier2,
+            all_items=all_items,
             dates=dates,
             date_label=datetime.strptime(date_str, "%Y-%m-%d").strftime("%A, %B %d"),
             slot="morning",
