@@ -74,23 +74,30 @@ feed send "test message"  # raw Telegram test
 - **Tier 1**: Top 8 (morning) / 4 (evening) as full messages with reaction legend
 - **Tier 2**: Remaining above-threshold items as a compact scannable list in one message
 
-## 5 Claude Max Routines
-All on Anthropic's cloud. Manage at https://claude.ai/code/scheduled
+## Scheduling — GitHub Actions (migrated from Claude Max routines 2026-04-20)
+Claude Max routines hit Telegram 403 from Anthropic's cloud IPs. Migrated all
+5 to GitHub Actions which has direct repo access + Telegram works fine.
 
-| ID | Name | Cron (UTC) | IST |
+All Claude Max triggers are DISABLED (IDs kept for reference):
+`trig_011DVQqk9Q3Zv9536Qev3PdV`, `trig_011gkwTru1kW67HkWymfNbmF`,
+`trig_01LwKsSsJjqGPwZKjutY8ypQ`, `trig_01LmwMoq9ZEcxTW6RiXJuKUg`,
+`trig_01QCbqCyRRT7UMSemVjncopf`
+
+## GitHub Actions (ALL scheduling runs here)
+Repo: https://github.com/BluetickVR/frontier-feed (public)
+Manage: https://github.com/BluetickVR/frontier-feed/actions
+
+| Workflow | Cron (UTC) | IST | What |
 |---|---|---|---|
-| `trig_011DVQqk9Q3Zv9536Qev3PdV` | morning-push | `15 1 * * *` | 06:45 |
-| `trig_011gkwTru1kW67HkWymfNbmF` | follow-ups | `30 7 * * *` | 13:00 |
-| `trig_01LwKsSsJjqGPwZKjutY8ypQ` | evening-push | `0 14 * * *` | 19:30 |
-| `trig_01LmwMoq9ZEcxTW6RiXJuKUg` | journal-retune | `30 16 * * *` | 22:00 |
-| `trig_01QCbqCyRRT7UMSemVjncopf` | weekly-synth | `30 15 * * 0` | Sun 21:00 |
+| `morning-push.yml` | `15 1 * * *` | 06:45 | Fetch 5 sources → score → push tier 1+2 to Telegram |
+| `follow-ups.yml` | `30 7 * * *` | 13:00 | ? → dossier, ! → prototype, p → tweet, l → LinkedIn |
+| `evening-push.yml` | `0 14 * * *` | 19:30 | Same as morning, smaller budget (4 items) |
+| `journal.yml` | `30 16 * * *` | 22:00 | Retune weights + write journal + Telegram summary |
+| `weekly-synth.yml` | `30 15 * * 0` | Sun 21:00 | Weekly trend rollup |
+| `poll-reactions.yml` | `*/5 * * * *` | every 5 min | Poll Telegram for reactions, commit to repo |
 
-Each routine: installs package, writes .env, runs the command, runs `feed sync` to push state to GitHub.
-
-## GitHub Actions
-- **poll-reactions.yml**: every 5 min, polls Telegram for reactions, commits to `state/reactions.jsonl`
-- Repo: https://github.com/BluetickVR/frontier-feed (public)
-- Secrets set: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `GROQ_API_KEY`
+Secrets (7): `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `GROQ_API_KEY`, `TAVILY_API_KEY`,
+`TWITTER_AUTH_TOKEN`, `TWITTER_CT0`, `LINKEDIN_COOKIE`
 
 ## Repos
 - **BluetickVR/frontier-feed** — this repo (public, pipeline code + state)
