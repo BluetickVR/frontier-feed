@@ -37,7 +37,7 @@ fetchers:
   github_trending:
     enabled: true
     # topics=python,ai,llm,agents,mcp; languages we care about
-    topics: [ai, agents, llm, mcp, langchain]
+    topics: [ai, agents, llm, mcp, langchain, 3d, threejs, webgl, gaussian-splatting, nerf, voice, spatial, ar, vr]
     languages: [python, typescript, rust]
     since: daily                 # daily | weekly | monthly
     max_items_per_run: 25
@@ -57,7 +57,7 @@ fetchers:
 
   show_hn:
     enabled: true
-    tags: [ai, ml, llm, agent]
+    tags: [ai, ml, llm, agent, 3d, webgl, voice, spatial, ar, vr, real-estate, proptech]
     max_items_per_run: 15
 
   tool_changelogs:

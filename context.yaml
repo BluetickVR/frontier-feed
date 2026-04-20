@@ -79,6 +79,16 @@ watchlist:
     - skirano            # Pedro — AI product building
     - NousResearch       # Nous Research — open-source model releases
     - jxnlco             # Jxnl — instructor, structured outputs
+    # 3D / spatial / rendering
+    - maborin            # Ricardo Cabello (mrdoob) — Three.js creator
+    - gaborcselle        # Gabor Cselle — spatial computing, AR/VR
+    - keaborin           # Keijiro Takahashi — Unity/3D rendering, VFX
+    - mattdesl           # Matt DesLauriers — creative coding, WebGL, generative 3D
+    - 0xabad1dea         # Gaussian splatting / NeRF researchers (collective)
+    # Voice AI
+    - fixaborin          # Fixie AI (Ultravox) — voice AI, your stack
+    - deepaborin         # Deepgram — speech-to-text, voice AI
+    - elevenaborin       # ElevenLabs — voice synthesis
 
   company_blogs:
     - https://www.anthropic.com/news

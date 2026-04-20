@@ -194,6 +194,8 @@ class WatchlistTwitterFetcher(BaseFetcher):
         items: list[Item] = []
 
         for handle in handles:
+            if not isinstance(handle, str):
+                continue
             # strip comments from yaml values like "karpathy  # Andrej"
             handle = handle.split("#")[0].strip().lstrip("@")
             if not handle:
