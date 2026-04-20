@@ -1,25 +1,20 @@
-# Master Dashboard Sumadhura — Stack Graph Summary
+# Master Sumadhura CMS — Orchestration Hub
+Source: /Users/anshulpadyal/master-sumadhura-cms
 
-## Architecture
-- **Business & User Admin** (9 components) — create business, create user, create role, admin login, inactive duration tracking
-- **API & Session Management** (8 components) — central apiCall(), force logout, active sessions, customer/salesperson listing
-- **App Shell** (3 components) — root App, routing
-- **Logout & Auth** (3 components) — individual salesperson logout, session handling
-- **Socket Room Monitor** (2 components) — real-time room monitoring
-- **Dashboard Layout** (2 components) — layout wrapper
+## Role
+Central hub for Claude Code. No code of its own — orchestrates work across:
+- sumadhura-cms-backend (Node.js API + MongoDB + S3 + Socket.io)
+- sumadhura-cms-dashboard (React + Vite + Tailwind + Socket.io client)
+- sumadhura-tv-app (Android Kotlin + React Native, kiosk mode)
 
-## God Nodes (highest-connected)
-- apiCall() (degree: high) — central API client, all API calls route through this
-- logoutIndividualSalesPerson() (degree: high) — session management
-- getDashboardOverview() (degree: high) — dashboard data aggregation
-- getAllSalesPersons() (degree: high) — salesperson listing
-- getProjectSalesPersons() (degree: high) — project-level salesperson data
+## Cross-repo connections (from graph analysis)
+- Backend SocketEventManager ←→ Dashboard TVSocket (real-time bridge)
+- Backend computeAspectRatio() ←→ Dashboard computeAspectRatio() (shared logic)
+- Backend Device Profile API ←→ Dashboard Device Profile Management UI
+- Backend CMS Schedule API ←→ TV App CmsSchedule (local evaluation)
+- Backend S3 upload pipeline ←→ Dashboard upload UI ←→ TV App content display
+- Backend serializeDevice() ←→ Dashboard getDeviceDisplayName() (device data flow)
 
-## Technologies
-- Frontend: React (TypeScript, TSX)
-- Build: Vite
-- Styling: Tailwind CSS, PostCSS
-- Real-time: Socket.io (room monitoring)
-- API: Centralized REST client (apiCall singleton)
-- Auth: Session-based, force logout capability
-- Purpose: Admin dashboard for managing businesses, salespersons, customers, and monitoring active sessions
+## Total across all repos
+- 765 nodes, 914 edges across 3 codebases
+- God nodes span repos: SocketEventManager (backend) ↔ TVSocket (dashboard)

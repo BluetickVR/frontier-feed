@@ -1,29 +1,27 @@
 # Sumadhura CMS Dashboard — Stack Graph Summary
+Source: /Users/anshulpadyal/sumadhura-cms-dashboard (graphify-out/ persists there)
 
-## Architecture
-- **Content Upload & Media Manager** (39 components) — drag-drop upload, media type detection, aspect ratio validation, S3 upload
-- **CMS Schedule Management** (33 components) — bulk schedule, cancel schedule, screen scheduling
-- **Media Library UI** (21 components) — manifest thumbnails, folder/document icons, media grid
-- **Device Display & Profiles** (19 components) — device labels, display names, compact views
-- **TV Socket Real-time** (17 components) — WebSocket connection, event handling, TV state sync
-- **Analytics & Reporting** (15 components) — date range filters, duration formatting, schedule views
-- **Upload Pipeline** (14 components) — media type detection, aspect ratio check, batch upload
-- **Device Profile Management** (14 components) — apply/clear/confirm device profiles, calibration
-- **Screen Selection UI** (11 components) — categorized screen select, group by category
-- **Date/Time Utilities** (11 components) — date range presets, ISO date math, format helpers
+## Architecture (364 nodes, 415 edges, 59 communities)
+- **Content Upload & Media Manager** (39) — drag-drop upload, media detection, aspect ratio validation, S3
+- **CMS Schedule Management** (33) — bulk schedule, cancel, screen scheduling, policy validation
+- **Media Library UI** (21) — manifest thumbnails, folder/document icons, media grid
+- **Device Display & Profiles** (19) — device labels, display names, compact views, EDID
+- **TV Socket Real-time** (17) — WebSocket connection, TV state sync, event handling
+- **Analytics & Reporting** (15) — date range filters, duration formatting, schedule views
+- **Upload Pipeline** (14) — media type detection, aspect ratio check, batch upload
+- **Device Profile Management** (14) — apply/clear/confirm profiles, calibration
+- **Screen Selection UI** (11) — categorized screen select, group by category
+- **Date/Time Utilities** (11) — date range presets, ISO math, format helpers
 
-## God Nodes (highest-connected)
-- getErrorMessage() (degree: high) — central error handler
-- TVSocket (degree: high) — WebSocket singleton for TV communication
-- getDeviceDisplayName() (degree: high) — device labeling across views
-- ScreenRow() (degree: high) — screen list item component
-- listTemplates() (degree: high) — template system
+## God Nodes
+- getErrorMessage() — central error handler
+- TVSocket — WebSocket singleton for TV communication
+- getDeviceDisplayName() — device labeling across views
+- ScreenRow() — screen list item component
+- listTemplates() — template system
 
 ## Technologies
-- Frontend: React (JSX), Vite
-- Styling: Tailwind CSS (inferred from icon components)
-- Real-time: Socket.io client (TVSocket class)
-- Storage: AWS S3 (upload policies, CDN URLs)
+- Frontend: React (JSX), Vite; Styling: Tailwind CSS
+- Real-time: Socket.io client (TVSocket); Storage: AWS S3
 - Media: Image/video upload with aspect ratio validation
-- State: React hooks pattern
-- API: REST client with error handling
+- API: REST client with centralized error handling
