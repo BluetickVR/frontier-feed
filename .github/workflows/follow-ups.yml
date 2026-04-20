@@ -1,0 +1,50 @@
+name: Follow-ups (dossiers + prototypes + posts)
+
+on:
+  schedule:
+    - cron: "30 7 * * *"  # 13:00 IST (07:30 UTC)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  follow-ups:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: pip install -e .
+
+      - name: Run follow-ups
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TWITTER_AUTH_TOKEN: ${{ secrets.TWITTER_AUTH_TOKEN }}
+          TWITTER_CT0: ${{ secrets.TWITTER_CT0 }}
+          LINKEDIN_COOKIE: ${{ secrets.LINKEDIN_COOKIE }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          feed follow-ups --hours 18
+          feed prototypes --hours 18 || true
+          feed autopublish --hours 18 || true
+
+      - name: Commit state
+        run: |
+          git config user.email "action@frontier-feed"
+          git config user.name "frontier-feed-bot"
+          git add state/ dossiers/ prototypes/ digests/
+          if ! git diff --cached --quiet; then
+            git commit -m "follow-ups: $(date -u +%Y-%m-%dT%H:%M)"
+            git pull --rebase origin main
+            git push origin main
+          fi
