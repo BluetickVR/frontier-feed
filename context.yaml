@@ -3,60 +3,88 @@
 
 identity:
   name: Anshul Padyal
-  role: Founder/CTO, PropViz (real estate tech, acquired by MagicBricks Dec 2024)
-  goal: Stay current on the AI frontier — tools, workflows, people, repos — so
-    our product roadmap and internal workflows compound faster than competitors'.
+  role: Founder/CTO, PropViz (acquired by MagicBricks/Times Group, Dec 2024)
+  ambition: Build the #1 real estate tech company in the world. AI + 3D tech
+    applied to property sales at a scale nobody else is attempting.
+  what_we_have: 80+ builder clients, ₹18Cr/yr revenue, 200-person org, MagicBricks
+    distribution. VR tours, 3D maps, AI voice caller, WhatsApp AI, inventory platform.
+  what_we_need: Every AI and 3D breakthrough that can widen our moat — voice AI,
+    spatial computing, generative 3D, agent orchestration, browser automation,
+    real-time rendering, LLM-powered sales workflows.
+  scoring_lens: "Would this help us build something no other real estate tech
+    company in the world has? Or change how we build software internally so fast
+    that competitors can't keep up?"
 
 # High-level topic buckets, in rough priority order.
 # Scorer uses these to compute relevance.
 topics:
   top_priority:
+    - Voice AI + conversational AI (Realtime APIs, LiveKit, Moshi, Deepgram, Ultravox, Vapi, ElevenLabs)
+    - 3D + spatial computing (Gaussian splatting, NeRF, 3D generation, WebGL, Three.js, AR/VR, Apple Vision Pro, spatial web)
+    - Agent frameworks and orchestration (LangGraph, CrewAI, Mastra, AgentKit, Claude Agent SDK)
     - Claude / Anthropic ecosystem (SDK, MCP, skills, Claude Code, routines)
-    - Agent frameworks and agent infra (LangGraph, CrewAI, Mastra, AgentKit)
-    - AI coding tools (Cursor, Windsurf, Cline, Aider, Continue)
-    - Voice AI (Realtime APIs, LiveKit, Moshi, Deepgram, Ultravox)
-    - MCP servers and integrations
+    - AI coding tools that 10x dev velocity (Cursor, Windsurf, Cline, Aider, Claude Code)
+    - Generative media (image, video, 3D asset generation — product-applicable, not art)
 
   high:
     - Foundation model releases (Anthropic, OpenAI, Google, Meta, Mistral, DeepSeek, Qwen)
-    - Eval + benchmarks for agent/coding quality
+    - Browser automation + AI-operated tooling (Playwright, Puppeteer, agent-driven UIs)
+    - Real-time rendering + streaming (WebRTC, WebGPU, live 3D in browser)
+    - MCP servers and integrations
     - Prompt + context engineering (cache, skills, tool design)
-    - Agent SDKs and harnesses
+    - AI-powered sales / CRM / customer engagement tools
+    - WhatsApp / messaging platform AI integrations
     - Retrieval / vector / embeddings infra
-    - Local inference (Ollama, llama.cpp, MLX)
+    - AI infra that cuts costs or speeds up shipping (inference, fine-tuning, deployment)
 
   interesting:
     - AI product launches from notable founders
     - New OSS repos trending in AI topic
-    - Applied AI case studies (esp. sales, real estate, industry-vertical SaaS)
-    - Browser automation + agent-operated tooling
+    - PropTech / real estate tech AI applications (anywhere in the world)
+    - AR/VR hardware + SDK releases
+    - Computer vision for physical spaces
+    - Applied AI case studies in enterprise / vertical SaaS
 
   deprioritize:
     - Pure NLP research papers with no applied angle
     - Generic LLM listicles and prompt packs
     - Crypto/AI token plays
     - AI ethics position pieces with no code
+    - Social media AI tools (scheduling, content generation for influencers)
 
 # People whose output is almost always worth reading.
 # Watchlist fetcher will poll these.
 watchlist:
   research_and_builders:
+    # Builders who explain what they ship
     - karpathy
     - simonw
-    - jeremyphoward
-    - svpino
-    - hwchase17
-    - erikschluntz
-    - alexalbert__
-    - skirano
-    - NousResearch
-    - Teknium1
-    - mckaywrigley
     - swyx
-    - jxnlco
-    - omarsar0
-    - _philschmid
-    - ClementDelangue
+    - mckaywrigley
+    - goodside           # Riley Goodside — prompt engineering frontier
+    # Researchers who post about their work
+    - tri_dao            # Tri Dao — FlashAttention, efficient inference
+    - srush_nlp          # Sasha Rush — paper visualization, architecture
+    - NoamShazeer        # Noam Shazeer — rare but paradigm-shifting
+    # AI engineering / applied
+    - hwchase17          # Harrison Chase — LangChain/LangGraph, agent patterns
+    - jerryjliu0         # Jerry Liu — LlamaIndex, RAG, retrieval
+    - OfficialLoganK     # Logan Kilpatrick — Google AI DevRel, Gemini
+    - alexalbert__       # Alex Albert — Anthropic prompt eng, MCP
+    - erikschluntz       # Erik Schluntz — Claude Code, tool use
+    - sh_reya            # Shreya Shankar — ML eng, evals, production AI
+    # Curators / synthesizers
+    - rasbt              # Sebastian Raschka — weekly paper roundups, "Ahead of AI"
+    - elvissaravia       # Elvis Saravia — DAIR.AI, daily paper digests
+    - lilianweng         # Lilian Weng — OpenAI, best explanatory blog posts
+    - _philschmid        # Philipp Schmid — HuggingFace, open models daily
+    - ClementDelangue    # Clément Delangue — HuggingFace CEO, open-source releases
+    # Original list members
+    - jeremyphoward      # Jeremy Howard — fast.ai, practical deep learning
+    - svpino             # Santiago — ML engineering, practical tips
+    - skirano            # Pedro — AI product building
+    - NousResearch       # Nous Research — open-source model releases
+    - jxnlco             # Jxnl — instructor, structured outputs
 
   company_blogs:
     - https://www.anthropic.com/news
@@ -81,8 +109,10 @@ business_filter_hints:
 
 # Signal volume budget — tune these over time.
 budgets:
-  morning_push_max_items: 6
-  evening_push_max_items: 3
-  relevance_threshold: 0.55   # 0..1, items below this are dropped
-  follow_up_threshold: 0.65   # '?' items must be above this to generate a dossier
+  morning_push_max_items: 8     # tier 1: full messages with reactions
+  evening_push_max_items: 4     # tier 1 evening
+  # Items above threshold but beyond tier 1 count get pushed as a compact list
+  # (tier 2). You scan in 10 seconds, tap any that catch your eye.
+  relevance_threshold: 0.45     # lower than before — let more through, tier 2 catches overflow
+  follow_up_threshold: 0.55     # '?' items must be above this to generate a dossier
   watchlist_high_signal: 0.70 # above this, watchlist items get pushed immediately

@@ -29,8 +29,11 @@ Use headings, short sentences. Max 350 words total."""
 def run_weekly_synth() -> dict:
     ROOT_JOURNALS = ROOT / "journals"
     if not ROOT_JOURNALS.exists():
-        send_text("(weekly synth: no journals yet)")
-        return {"ok": False}
+        try:
+            send_text("(weekly synth: no journals yet)")
+        except Exception:
+            pass
+        return {"ok": False, "reason": "no journals directory"}
 
     since = datetime.now(timezone.utc) - timedelta(days=7)
     journals = []
@@ -44,8 +47,11 @@ def run_weekly_synth() -> dict:
             continue
 
     if not journals:
-        send_text("(weekly synth: no journals in the last 7 days)")
-        return {"ok": False}
+        try:
+            send_text("(weekly synth: no journals in the last 7 days)")
+        except Exception:
+            pass
+        return {"ok": False, "reason": "no journals in the last 7 days"}
 
     ctx = load_context()
     prompt = (
@@ -61,5 +67,8 @@ def run_weekly_synth() -> dict:
     path.write_text(f"# Weekly synthesis — {wk}\n\n{synth}\n")
 
     # push a trimmed version to Telegram
-    send_text(f"<b>📈 Weekly synthesis — {wk}</b>\n\n{synth[:3200]}", disable_preview=True)
+    try:
+        send_text(f"<b>📈 Weekly synthesis — {wk}</b>\n\n{synth[:3200]}", disable_preview=True)
+    except Exception:
+        pass
     return {"ok": True, "path": str(path)}

@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parent.parent
 OFFSET_FILE = ROOT / "state" / "tg_offset.txt"
 
 _ID_RE = re.compile(r"([a-z0-9_\-]{1,40}-[a-f0-9]{12})")
-VALID_CHARS = {".", "?", "+", "-"}
+VALID_CHARS = {".", "?", "+", "-", "!", "p", "l"}
 
 
 def _token() -> str:

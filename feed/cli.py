@@ -108,6 +108,74 @@ def poll():
 
 
 @app.command()
+def sync():
+    """Push state + today's output files to GitHub via API (no git push needed)."""
+    from feed.sync import sync_state
+    res = sync_state()
+    typer.echo(json.dumps(res, indent=2))
+
+
+@app.command()
+def draft(
+    item_id: str = typer.Argument(..., help="item id to draft from"),
+    platform: str = typer.Option("twitter", help="twitter | linkedin"),
+    post: bool = typer.Option(False, help="actually post it (not just draft)"),
+):
+    """Draft a Twitter/LinkedIn post from a digest item."""
+    from feed.draft import draft_from_id
+    text = draft_from_id(item_id, platform)
+    if not text:
+        typer.echo(f"item {item_id} not found", err=True)
+        raise typer.Exit(1)
+    typer.echo(f"\n--- {platform} draft ---\n{text}\n---\n")
+    if post and platform == "twitter":
+        from feed.post_twitter import post_tweet
+        res = post_tweet(text)
+        typer.echo(json.dumps(res, indent=2))
+    elif post:
+        typer.echo(f"(auto-post for {platform} not yet wired)")
+
+
+@app.command()
+def prototypes(hours: int = typer.Option(18, help="lookback window for '!' reactions")):
+    """Generate prototype plans for items marked with '!'."""
+    from feed.prototype import run_prototypes
+    res = run_prototypes(lookback_hours=hours)
+    typer.echo(json.dumps(res, indent=2))
+
+
+@app.command()
+def autopublish(hours: int = typer.Option(24, help="lookback window for 'p'/'l' reactions")):
+    """Draft + post tweets (p) and LinkedIn posts (l)."""
+    from datetime import datetime, timedelta, timezone
+    from feed.draft import draft_tweet, draft_linkedin
+    from feed.push import send_text
+    from feed.state import load_item, reactions_since
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+    rxns = [r for r in reactions_since(cutoff) if r.char in ("p", "l")]
+    posted = 0
+    for r in rxns:
+        it = load_item(r.item_id)
+        if not it:
+            continue
+        try:
+            if r.char == "p":
+                from feed.post_twitter import post_tweet
+                text = draft_tweet(it)
+                res = post_tweet(text)
+                send_text(f"🐦 Posted tweet:\n{text}\n\n{res.get('url','')}", disable_preview=True)
+            elif r.char == "l":
+                from feed.post_linkedin import post_linkedin
+                text = draft_linkedin(it)
+                res = post_linkedin(text)
+                send_text(f"💼 Posted to LinkedIn:\n{text[:500]}", disable_preview=True)
+            posted += 1
+        except Exception as e:
+            send_text(f"(post failed for {r.item_id} on {'twitter' if r.char=='p' else 'linkedin'}: {e})")
+    typer.echo(json.dumps({"reactions": len(rxns), "posted": posted}, indent=2))
+
+
+@app.command()
 def state():
     """Print state summary."""
     from feed.state import load_pointers, load_reactions, load_weights

@@ -12,7 +12,7 @@ from feed.models import Item
 
 _API = "https://api.telegram.org/bot{token}/{method}"
 
-_REPLY_LEGEND = "reply: <code>.</code> read · <code>?</code> dig · <code>+</code> more like this · <code>-</code> less"
+_REPLY_LEGEND = "<code>.</code> read · <code>?</code> dig · <code>!</code> prototype · <code>p</code> tweet · <code>l</code> linkedin · <code>+</code>/<code>-</code>"
 
 
 def _token() -> str:
