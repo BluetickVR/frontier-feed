@@ -70,11 +70,19 @@ def _chat_with_fallback(task: str, prompt: str, system: str,
 
 def _score_pass1(it: Item) -> Item:
     body = (it.summary or "")[:600]
+    extra_context = ""
+    if it.source == "watchlist_twitter":
+        eng = it.extra.get("engagement", 0)
+        handle = it.extra.get("handle", "")
+        extra_context = f"\nPosted by: @{handle} (engagement: {eng} likes+RTs). This is from a top AI researcher/builder's Twitter."
+    elif it.source == "hf_papers":
+        comments = it.extra.get("comments", 0)
+        extra_context = f"\nHuggingFace trending paper ({comments} comments). Research frontier."
     prompt = (
         f"{_context_blurb()}\n\n"
         f"Item: [{it.source}] {it.title}\n"
         f"URL: {it.url}\n"
-        f"Summary: {body}\n"
+        f"Summary: {body}{extra_context}\n"
     )
     raw = _chat_with_fallback("classify", prompt, system=_PASS1_SYSTEM,
                               temperature=0.1, max_tokens=256)
@@ -103,7 +111,7 @@ def _score_pass2(it: Item) -> Item:
     return it
 
 
-def score_all(items: Iterable[Item], pass2_top_n: int = 20) -> list[Item]:
+def score_all(items: Iterable[Item], pass2_top_n: int = 30) -> list[Item]:
     """Two-pass scoring: cheap filter on all, smart rerank on top N."""
     # Pass 1: quick score everything (8B model, cheap)
     scored: list[Item] = []
