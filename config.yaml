@@ -15,7 +15,7 @@ providers:
   gemini:
     enabled: true
     models:
-      fallback_chat: gemini-2.0-flash-exp   # free tier ~1500 req/day
+      fallback_chat: gemini-2.5-flash       # free tier ~1500 req/day
       embedding: text-embedding-004         # free
     # Used when Groq rate-limits, or when Gemini's quality is better (synthesis).
 
@@ -28,9 +28,9 @@ providers:
 # digest uses these names; swap providers here instead of touching code.
 routes:
   summarize: groq
-  classify: groq
-  rank: groq
-  synthesis: gemini          # dossiers + digest "why this matters" lines
+  classify: gemini           # pass1 scoring — gemini free tier has higher limits
+  rank: gemini               # pass2 scoring — gemini handles structured JSON well
+  synthesis: gemini           # dossiers + digest "why this matters" lines
   embedding: gemini
 
 fetchers:

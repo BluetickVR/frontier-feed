@@ -38,14 +38,42 @@ def _groq_client():
     return Groq(api_key=key)
 
 
-def _gemini_model(model_name: str):
-    import google.generativeai as genai
+def _gemini_chat(model_name: str, prompt: str, system: str | None = None,
+                 temperature: float = 0.3, max_tokens: int = 512) -> str:
+    """Call Gemini via REST API directly — no SDK needed."""
+    import httpx
 
     key = os.environ.get("GEMINI_API_KEY", "").strip()
     if not key:
         raise RuntimeError("GEMINI_API_KEY not set")
-    genai.configure(api_key=key)
-    return genai.GenerativeModel(model_name)
+
+    if not model_name.startswith("models/"):
+        model_name = f"models/{model_name}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/{model_name}:generateContent?key={key}"
+
+    contents = []
+    if system:
+        contents.append({"role": "user", "parts": [{"text": system + "\n\n" + prompt}]})
+    else:
+        contents.append({"role": "user", "parts": [{"text": prompt}]})
+
+    body = {
+        "contents": contents,
+        "generationConfig": {
+            "temperature": temperature,
+            "maxOutputTokens": max_tokens,
+            "thinkingConfig": {"thinkingBudget": 0},
+        },
+    }
+
+    r = httpx.post(url, json=body, timeout=30)
+    r.raise_for_status()
+    data = r.json()
+    try:
+        parts = data["candidates"][0]["content"]["parts"]
+        return parts[-1]["text"].strip()
+    except (KeyError, IndexError):
+        return ""
 
 
 def chat(task: str, prompt: str, system: Optional[str] = None, temperature: float = 0.3,
@@ -68,14 +96,9 @@ def chat(task: str, prompt: str, system: Optional[str] = None, temperature: floa
         return (r.choices[0].message.content or "").strip()
 
     if prov == "gemini":
-        model_name = cfg["providers"]["gemini"]["models"].get("fallback_chat", "gemini-2.0-flash-exp")
-        model = _gemini_model(model_name)
-        full = (system + "\n\n" if system else "") + prompt
-        r = model.generate_content(
-            full,
-            generation_config={"temperature": temperature, "max_output_tokens": max_tokens},
-        )
-        return (r.text or "").strip()
+        model_name = cfg["providers"]["gemini"]["models"].get("fallback_chat", "gemini-2.0-flash")
+        return _gemini_chat(model_name, prompt, system=system,
+                           temperature=temperature, max_tokens=max_tokens)
 
     if prov == "anthropic":
         import anthropic
