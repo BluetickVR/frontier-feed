@@ -176,6 +176,39 @@ def autopublish(hours: int = typer.Option(24, help="lookback window for 'p'/'l' 
 
 
 @app.command()
+def briefing(slot: str = typer.Option("morning", help="morning | evening")):
+    """Generate audio briefing from today's digest, push to Telegram."""
+    from feed.audio import generate_briefing
+    from feed.state import ITEMS_FILE
+    from feed.models import Item
+    items: list[Item] = []
+    if ITEMS_FILE.exists():
+        from datetime import datetime, timezone
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        with ITEMS_FILE.open() as f:
+            for line in f:
+                if not line.strip():
+                    continue
+                try:
+                    it = Item.model_validate_json(line)
+                    if it.first_seen.strftime("%Y-%m-%d") == today and it.score > 0.3:
+                        items.append(it)
+                except Exception:
+                    continue
+    items.sort(key=lambda x: x.score, reverse=True)
+    res = generate_briefing(items[:10], slot=slot)
+    typer.echo(json.dumps(res, indent=2))
+
+
+@app.command()
+def site():
+    """Generate static website from all digests."""
+    from feed.site_gen import generate_site
+    res = generate_site()
+    typer.echo(json.dumps(res, indent=2))
+
+
+@app.command()
 def state():
     """Print state summary."""
     from feed.state import load_pointers, load_reactions, load_weights
