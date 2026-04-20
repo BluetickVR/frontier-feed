@@ -52,7 +52,7 @@ def draft_linkedin(item: Item, dossier_text: str | None = None) -> str:
     body = dossier_text or (item.summary or "")
     prompt = (
         f"Writer: {ctx['identity']['name']}, {ctx['identity']['role']}\n"
-        f"Goal: {ctx['identity']['goal']}\n\n"
+        f"Ambition: {ctx['identity'].get('ambition', ctx['identity'].get('goal', ''))}\n\n"
         f"Item:\n"
         f"Title: {item.title}\n"
         f"URL: {item.url}\n"

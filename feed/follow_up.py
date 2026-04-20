@@ -43,7 +43,7 @@ def _briefing(item: Item, sources: list[dict]) -> str:
         for i, s in enumerate(sources[:5])
     )
     prompt = (
-        f"Reader context: {ctx['identity']['role']}. Goal: {ctx['identity']['goal']}\n\n"
+        f"Reader context: {ctx['identity']['role']}. Ambition: {ctx['identity'].get('ambition', ctx['identity'].get('goal', ''))}\n\n"
         f"Item: {item.title}\nURL: {item.url}\nSummary: {item.summary or ''}\n\n"
         f"Sources:\n{src_block}\n\n"
         "Write the 2-paragraph briefing now."

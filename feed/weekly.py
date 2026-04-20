@@ -55,7 +55,7 @@ def run_weekly_synth() -> dict:
 
     ctx = load_context()
     prompt = (
-        f"Reader: {ctx['identity']['role']}. Goal: {ctx['identity']['goal']}\n\n"
+        f"Reader: {ctx['identity']['role']}. Ambition: {ctx['identity'].get('ambition', ctx['identity'].get('goal', ''))}\n\n"
         f"Journals (last 7 days, concatenated):\n\n" + "\n\n---\n\n".join(journals)[:12000]
     )
     synth = chat("synthesis", prompt, system=_SYSTEM, temperature=0.5, max_tokens=1000)
