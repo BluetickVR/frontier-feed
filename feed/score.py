@@ -8,9 +8,13 @@ from __future__ import annotations
 
 import json
 import re
+from functools import lru_cache
+from pathlib import Path
 from typing import Iterable
 
 from feed.llm import chat, load_context
+
+ROOT = Path(__file__).resolve().parent.parent
 from feed.models import Item
 from feed.state import weight_for
 
@@ -37,8 +41,28 @@ No markdown. Just JSON."""
 _JSON_RE = re.compile(r"\{.*\}", re.DOTALL)
 
 
+@lru_cache
+def _load_stack_summary() -> str:
+    """Load condensed stack graph summaries from stack/ folder."""
+    stack_dir = ROOT / "stack"
+    if not stack_dir.exists():
+        return ""
+    parts = []
+    for f in sorted(stack_dir.glob("*-summary.md")):
+        text = f.read_text()
+        # Just take Architecture + Technologies sections (compact)
+        for line in text.split("\n"):
+            if line.startswith("- **") or line.startswith("- Runtime") or line.startswith("- Database") or line.startswith("- Storage") or line.startswith("- Real-time") or line.startswith("- Media") or line.startswith("- Display") or line.startswith("- Auth"):
+                parts.append(line.strip("- ").strip())
+    return "; ".join(parts[:20]) if parts else ""
+
+
 def _context_blurb() -> str:
-    return "CTO building #1 real estate tech company. Products: VR tours, 3D maps, AI voice caller, WhatsApp bot. Stack: React, Node, Python, Three.js, Ultravox, WebSockets."
+    stack = _load_stack_summary()
+    base = "CTO building #1 real estate tech company. Products: VR tours, 3D maps, AI voice caller, WhatsApp bot, TV CMS."
+    if stack:
+        base += f" Actual stack (from code graph): {stack[:400]}"
+    return base
 
 
 def _parse(raw: str) -> tuple[float, str]:
