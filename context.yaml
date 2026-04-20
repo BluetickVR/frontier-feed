@@ -3,17 +3,11 @@
 
 identity:
   name: Anshul Padyal
-  role: Founder/CTO, PropViz (acquired by MagicBricks/Times Group, Dec 2024)
-  ambition: Build the #1 real estate tech company in the world. AI + 3D tech
-    applied to property sales at a scale nobody else is attempting.
-  what_we_have: 80+ builder clients, ₹18Cr/yr revenue, 200-person org, MagicBricks
-    distribution. VR tours, 3D maps, AI voice caller, WhatsApp AI, inventory platform.
-  what_we_need: Every AI and 3D breakthrough that can widen our moat — voice AI,
-    spatial computing, generative 3D, agent orchestration, browser automation,
-    real-time rendering, LLM-powered sales workflows.
-  scoring_lens: "Would this help us build something no other real estate tech
-    company in the world has? Or change how we build software internally so fast
-    that competitors can't keep up?"
+  role: "Founder/CTO, PropViz (acquired by MagicBricks/Times Group, Dec 2024)"
+  ambition: "Build the #1 real estate tech company in the world. AI + 3D tech applied to property sales at a scale nobody else is attempting."
+  what_we_have: "80+ builder clients, 18Cr/yr revenue, 200-person org, MagicBricks distribution. VR tours, 3D maps, AI voice caller, WhatsApp AI, inventory platform."
+  what_we_need: "Every AI and 3D breakthrough that can widen our moat — voice AI, spatial computing, generative 3D, agent orchestration, browser automation, real-time rendering, LLM-powered sales workflows."
+  scoring_lens: "Would this help us build something no other real estate tech company in the world has? Or change how we build software internally so fast that competitors can't keep up?"
 
 # High-level topic buckets, in rough priority order.
 # Scorer uses these to compute relevance.
