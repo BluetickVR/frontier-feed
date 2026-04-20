@@ -38,8 +38,13 @@ def _group_by_date(items: list[Item]) -> dict[str, list[Item]]:
     for it in items:
         d = (it.pushed_at or it.first_seen).strftime("%Y-%m-%d")
         groups.setdefault(d, []).append(it)
+    # Deduplicate by id within each day — keep highest-scored version
     for k in groups:
-        groups[k].sort(key=lambda x: x.score, reverse=True)
+        seen: dict[str, Item] = {}
+        for it in groups[k]:
+            if it.id not in seen or it.score > seen[it.id].score:
+                seen[it.id] = it
+        groups[k] = sorted(seen.values(), key=lambda x: x.score, reverse=True)
     return groups
 
 
