@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontier Feed — Anshul's AI & 3D Intel</title>
+<style>
+  :root { --bg: #0a0a0a; --card: #141414; --border: #222; --text: #e0e0e0; --dim: #888; --accent: #4f9cf5; --high: #22c55e; --mid: #eab308; --low: #6b7280; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); max-width: 800px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { color: var(--dim); font-size: 0.85rem; margin-bottom: 20px; }
+
+  /* Controls bar */
+  .controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .controls label { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+  .filter-btn { background: none; border: 1px solid var(--border); color: var(--dim); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+  .sort-select { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
+  .search-input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 4px; font-size: 0.85rem; width: 180px; }
+  .search-input::placeholder { color: var(--dim); }
+  .stats { font-size: 0.75rem; color: var(--dim); margin-left: auto; }
+
+  /* Date nav */
+  .date-nav { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .date-nav a { color: var(--accent); text-decoration: none; font-size: 0.8rem; padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; }
+  .date-nav a.active { background: var(--accent); color: #000; }
+
+  /* Audio */
+  .audio-player { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 20px; }
+  .audio-player h3 { font-size: 0.9rem; margin-bottom: 8px; }
+  .audio-player audio { width: 100%; height: 36px; }
+
+  /* Items */
+  .items-container { }
+  .item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; transition: opacity 0.15s; }
+  .item.hidden { display: none; }
+  .item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .item-title { font-size: 0.95rem; font-weight: 500; flex: 1; }
+  .item-title a { color: var(--text); text-decoration: none; }
+  .item-title a:hover { color: var(--accent); }
+  .score { font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .score-high { background: #22c55e22; color: var(--high); }
+  .score-mid { background: #eab30822; color: var(--mid); }
+  .score-low { background: #6b728022; color: var(--low); }
+  .item-meta { font-size: 0.8rem; color: var(--dim); margin-top: 6px; display: flex; gap: 8px; align-items: center; }
+  .source-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 3px; background: #ffffff10; }
+  .source-tag.s-github_trending { border-left: 2px solid #f0883e; }
+  .source-tag.s-watchlist_twitter { border-left: 2px solid #1d9bf0; }
+  .source-tag.s-hf_papers { border-left: 2px solid #ff9d00; }
+  .source-tag.s-show_hn { border-left: 2px solid #ff6600; }
+  .source-tag.s-github_releases { border-left: 2px solid #8b5cf6; }
+  .item-why { font-size: 0.85rem; color: var(--dim); margin-top: 8px; font-style: italic; line-height: 1.4; }
+  .empty-state { color: var(--dim); text-align: center; padding: 60px 0; }
+  footer { text-align: center; color: var(--dim); font-size: 0.75rem; margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<h1>Frontier Feed</h1>
+<p class="subtitle">AI & 3D intel — curated daily for PropViz</p>
+
+<div class="date-nav">
+
+<a href="index.html" >May 02</a>
+
+<a href="2026-05-01.html" >May 01</a>
+
+<a href="2026-04-30.html" >Apr 30</a>
+
+<a href="2026-04-29.html" >Apr 29</a>
+
+<a href="2026-04-28.html" >Apr 28</a>
+
+<a href="2026-04-27.html" >Apr 27</a>
+
+<a href="2026-04-26.html" >Apr 26</a>
+
+<a href="2026-04-25.html" >Apr 25</a>
+
+<a href="2026-04-24.html" >Apr 24</a>
+
+<a href="2026-04-23.html" >Apr 23</a>
+
+<a href="2026-04-22.html" class="active">Apr 22</a>
+
+<a href="2026-04-21.html" >Apr 21</a>
+
+<a href="2026-04-20.html" >Apr 20</a>
+
+</div>
+
+
+
+<div class="controls">
+  <label>Source:</label>
+  <button class="filter-btn active" data-source="all">All</button>
+  <button class="filter-btn" data-source="github_trending">GitHub</button>
+  <button class="filter-btn" data-source="watchlist_twitter">Twitter</button>
+  <button class="filter-btn" data-source="hf_papers">Papers</button>
+  <button class="filter-btn" data-source="show_hn">HN</button>
+  <button class="filter-btn" data-source="github_releases">Releases</button>
+  <label style="margin-left: 12px;">Sort:</label>
+  <select class="sort-select" id="sort-by">
+    <option value="score-desc">Score ↓</option>
+    <option value="score-asc">Score ↑</option>
+    <option value="source">Source</option>
+    <option value="title">Title A-Z</option>
+  </select>
+  <input type="text" class="search-input" id="search" placeholder="Search...">
+  <span class="stats" id="stats"></span>
+</div>
+
+<div class="items-container" id="items">
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="AIDC-AI / Pixelle-Video">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/AIDC-AI/Pixelle-Video" target="_blank">AIDC-AI / Pixelle-Video</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="Alishahryar1 / free-claude-code">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/Alishahryar1/free-claude-code" target="_blank">Alishahryar1 / free-claude-code</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="davila7 / claude-code-templates">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/davila7/claude-code-templates" target="_blank">davila7 / claude-code-templates</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="open-webui / open-webui">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/open-webui/open-webui" target="_blank">open-webui / open-webui</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="mvanhorn / last30days-skill">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/mvanhorn/last30days-skill" target="_blank">mvanhorn / last30days-skill</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="EbookFoundation / free-programming-books">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/EbookFoundation/free-programming-books" target="_blank">EbookFoundation / free-programming-books</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="KeygraphHQ / shannon">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/KeygraphHQ/shannon" target="_blank">KeygraphHQ / shannon</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="open-metadata / OpenMetadata">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/open-metadata/OpenMetadata" target="_blank">open-metadata / OpenMetadata</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="vercel-labs / skills">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/vercel-labs/skills" target="_blank">vercel-labs / skills</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="xiangechen / chili3d">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/xiangechen/chili3d" target="_blank">xiangechen / chili3d</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="InsForge / InsForge">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/InsForge/InsForge" target="_blank">InsForge / InsForge</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="openai / codex">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/openai/codex" target="_blank">openai / codex</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="stalwartlabs / stalwart">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/stalwartlabs/stalwart" target="_blank">stalwartlabs / stalwart</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="rtk-ai / rtk">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/rtk-ai/rtk" target="_blank">rtk-ai / rtk</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="n0-computer / iroh">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/n0-computer/iroh" target="_blank">n0-computer / iroh</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Contrastive Attribution in the Wild: An Interpretability Analysis of LLM Failures on Realistic Benchmarks">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.17761" target="_blank">Contrastive Attribution in the Wild: An Interpretability Analysis of LLM Failures on Realistic Benchmarks</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="SmartPhotoCrafter: Unified Reasoning, Generation and Optimization for Automatic Photographic Image Editing">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.19587" target="_blank">SmartPhotoCrafter: Unified Reasoning, Generation and Optimization for Automatic Photographic Image Editing</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Speculative Decoding for Autoregressive Video Generation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.17397" target="_blank">Speculative Decoding for Autoregressive Video Generation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="TEMPO: Scaling Test-time Training for Large Reasoning Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.19295" target="_blank">TEMPO: Scaling Test-time Training for Large Reasoning Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Chat2Workflow: A Benchmark for Generating Executable Visual Workflows with Natural Language">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.19667" target="_blank">Chat2Workflow: A Benchmark for Generating Executable Visual Workflows with Natural Language</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Target-Oriented Pretraining Data Selection via Neuron-Activated Graph">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.15706" target="_blank">Target-Oriented Pretraining Data Selection via Neuron-Activated Graph</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Code-Switching Information Retrieval: Benchmarks, Analysis, and the Limits of Current Retrievers">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.17632" target="_blank">Code-Switching Information Retrieval: Benchmarks, Analysis, and the Limits of Current Retrievers</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Dual-View Training for Instruction-Following Information Retrieval">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.18845" target="_blank">Dual-View Training for Instruction-Following Information Retrieval</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="MM-JudgeBias: A Benchmark for Evaluating Compositional Biases in MLLM-as-a-Judge">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.18164" target="_blank">MM-JudgeBias: A Benchmark for Evaluating Compositional Biases in MLLM-as-a-Judge</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="CoInteract: Physically-Consistent Human-Object Interaction Video Synthesis via Spatially-Structured Co-Generation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.19636" target="_blank">CoInteract: Physically-Consistent Human-Object Interaction Video Synthesis via Spatially-Structured Co-Generation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_releases" data-score="0.4" data-title="anthropics/claude-code v2.1.117">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.117" target="_blank">anthropics/claude-code v2.1.117</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_releases">github_releases</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@jeremyphoward: For the "small test" they've modified their docs to remove mention of Claude Code in Claude Pro: https://t.co/cG75PWlZyj...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/jeremyphoward/status/2046741451040751836" target="_blank">@jeremyphoward: For the "small test" they've modified their docs to remove mention of Claude Code in Claude Pro: https://t.co/cG75PWlZyj...</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@NousResearch: Access GPT Image 2.0 natively in Hermes Agent
+
+Update now to get access - just run `hermes update` and select your image...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/NousResearch/status/2046693872773062834" target="_blank">@NousResearch: Access GPT Image 2.0 natively in Hermes Agent
+
+Update now to get access - just run `hermes update` and select your image...</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@jxnlco: reminder that unlike codex, openai employees are actually people and the thank yous actually mean something">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/jxnlco/status/2046723782136762440" target="_blank">@jxnlco: reminder that unlike codex, openai employees are actually people and the thank yous actually mean something</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@mckaywrigley: anthropic’s taste continues to be unmatched.
+
+- something cool comes out
+- nobody does anything with it
+- anthropic fina...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/mckaywrigley/status/2037299677599838490" target="_blank">@mckaywrigley: anthropic’s taste continues to be unmatched.
+
+- something cool comes out
+- nobody does anything with it
+- anthropic fina...</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@tri_dao: The dynamical system view gives very clean conditions for looped transformer to be stable">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/tri_dao/status/2044842948118921703" target="_blank">@tri_dao: The dynamical system view gives very clean conditions for looped transformer to be stable</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="RDP LoRA: Geometry-Driven Identification for Parameter-Efficient Adaptation in Large Language Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.19321" target="_blank">RDP LoRA: Geometry-Driven Identification for Parameter-Efficient Adaptation in Large Language Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Micro Language Models Enable Instant Responses">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.19642" target="_blank">Micro Language Models Enable Instant Responses</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="CityRAG: Stepping Into a City via Spatially-Grounded Video Generation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.19741" target="_blank">CityRAG: Stepping Into a City via Spatially-Grounded Video Generation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="What Makes an LLM a Good Optimizer? A Trajectory Analysis of LLM-Guided Evolutionary Search">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.19440" target="_blank">What Makes an LLM a Good Optimizer? A Trajectory Analysis of LLM-Guided Evolutionary Search</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="MoVE: Translating Laughter and Tears via Mixture of Vocalization Experts in Speech-to-Speech Translation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.17435" target="_blank">MoVE: Translating Laughter and Tears via Mixture of Vocalization Experts in Speech-to-Speech Translation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Accurate and scalable exchange-correlation with deep learning">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2506.14665" target="_blank">Accurate and scalable exchange-correlation with deep learning</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="AJ-Bench: Benchmarking Agent-as-a-Judge for Environment-Aware Evaluation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.18240" target="_blank">AJ-Bench: Benchmarking Agent-as-a-Judge for Environment-Aware Evaluation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Understanding and Enforcing Weight Disentanglement in Task Arithmetic">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.17078" target="_blank">Understanding and Enforcing Weight Disentanglement in Task Arithmetic</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="ShadowPEFT: Shadow Network for Parameter-Efficient Fine-Tuning">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.19254" target="_blank">ShadowPEFT: Shadow Network for Parameter-Efficient Fine-Tuning</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="HP-Edit: A Human-Preference Post-Training Framework for Image Editing">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.19406" target="_blank">HP-Edit: A Human-Preference Post-Training Framework for Image Editing</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@ClementDelangue: Countdown to no Claude in cursor?">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/ClementDelangue/status/2046762314766934350" target="_blank">@ClementDelangue: Countdown to no Claude in cursor?</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@simonw: True to form, I've already seen OpenAI themselves refer to the new image model as "ChatGPT Images 2.0", "Image gen 2" an...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/simonw/status/2046695792782749862" target="_blank">@simonw: True to form, I've already seen OpenAI themselves refer to the new image model as "ChatGPT Images 2.0", "Image gen 2" an...</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@jerryjliu0: LiteParse is the best model-free, open-source document parser for AI agents.
+
+It now gets a first-class landing page on ...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/jerryjliu0/status/2045664528097247649" target="_blank">@jerryjliu0: LiteParse is the best model-free, open-source document parser for AI agents.
+
+It now gets a first-class landing page on ...</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+</div>
+
+
+
+<footer>frontier-feed — auto-generated daily at 06:45 IST</footer>
+
+<script>
+const items = document.querySelectorAll('.item');
+const filterBtns = document.querySelectorAll('.filter-btn');
+const sortSelect = document.getElementById('sort-by');
+const searchInput = document.getElementById('search');
+const statsEl = document.getElementById('stats');
+const container = document.getElementById('items');
+
+let activeSource = 'all';
+
+function updateStats() {
+  const visible = document.querySelectorAll('.item:not(.hidden)').length;
+  statsEl.textContent = `${visible}/${items.length}`;
+}
+
+function applyFilters() {
+  const q = searchInput.value.toLowerCase();
+  items.forEach(el => {
+    const matchSource = activeSource === 'all' || el.dataset.source === activeSource;
+    const matchSearch = !q || el.textContent.toLowerCase().includes(q);
+    el.classList.toggle('hidden', !(matchSource && matchSearch));
+  });
+  updateStats();
+}
+
+function applySort() {
+  const val = sortSelect.value;
+  const arr = Array.from(items);
+  arr.sort((a, b) => {
+    if (val === 'score-desc') return parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
+    if (val === 'score-asc') return parseFloat(a.dataset.score) - parseFloat(b.dataset.score);
+    if (val === 'source') return a.dataset.source.localeCompare(b.dataset.source);
+    if (val === 'title') return a.dataset.title.localeCompare(b.dataset.title);
+    return 0;
+  });
+  arr.forEach(el => container.appendChild(el));
+}
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeSource = btn.dataset.source;
+    applyFilters();
+  });
+});
+
+sortSelect.addEventListener('change', () => { applySort(); applyFilters(); });
+searchInput.addEventListener('input', applyFilters);
+updateStats();
+</script>
+</body>
+</html>

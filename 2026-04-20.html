@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontier Feed — Anshul's AI & 3D Intel</title>
+<style>
+  :root { --bg: #0a0a0a; --card: #141414; --border: #222; --text: #e0e0e0; --dim: #888; --accent: #4f9cf5; --high: #22c55e; --mid: #eab308; --low: #6b7280; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); max-width: 800px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { color: var(--dim); font-size: 0.85rem; margin-bottom: 20px; }
+
+  /* Controls bar */
+  .controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .controls label { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+  .filter-btn { background: none; border: 1px solid var(--border); color: var(--dim); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+  .sort-select { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
+  .search-input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 4px; font-size: 0.85rem; width: 180px; }
+  .search-input::placeholder { color: var(--dim); }
+  .stats { font-size: 0.75rem; color: var(--dim); margin-left: auto; }
+
+  /* Date nav */
+  .date-nav { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .date-nav a { color: var(--accent); text-decoration: none; font-size: 0.8rem; padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; }
+  .date-nav a.active { background: var(--accent); color: #000; }
+
+  /* Audio */
+  .audio-player { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 20px; }
+  .audio-player h3 { font-size: 0.9rem; margin-bottom: 8px; }
+  .audio-player audio { width: 100%; height: 36px; }
+
+  /* Items */
+  .items-container { }
+  .item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; transition: opacity 0.15s; }
+  .item.hidden { display: none; }
+  .item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .item-title { font-size: 0.95rem; font-weight: 500; flex: 1; }
+  .item-title a { color: var(--text); text-decoration: none; }
+  .item-title a:hover { color: var(--accent); }
+  .score { font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .score-high { background: #22c55e22; color: var(--high); }
+  .score-mid { background: #eab30822; color: var(--mid); }
+  .score-low { background: #6b728022; color: var(--low); }
+  .item-meta { font-size: 0.8rem; color: var(--dim); margin-top: 6px; display: flex; gap: 8px; align-items: center; }
+  .source-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 3px; background: #ffffff10; }
+  .source-tag.s-github_trending { border-left: 2px solid #f0883e; }
+  .source-tag.s-watchlist_twitter { border-left: 2px solid #1d9bf0; }
+  .source-tag.s-hf_papers { border-left: 2px solid #ff9d00; }
+  .source-tag.s-show_hn { border-left: 2px solid #ff6600; }
+  .source-tag.s-github_releases { border-left: 2px solid #8b5cf6; }
+  .item-why { font-size: 0.85rem; color: var(--dim); margin-top: 8px; font-style: italic; line-height: 1.4; }
+  .empty-state { color: var(--dim); text-align: center; padding: 60px 0; }
+  footer { text-align: center; color: var(--dim); font-size: 0.75rem; margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<h1>Frontier Feed</h1>
+<p class="subtitle">AI & 3D intel — curated daily for PropViz</p>
+
+<div class="date-nav">
+
+<a href="index.html" >May 02</a>
+
+<a href="2026-05-01.html" >May 01</a>
+
+<a href="2026-04-30.html" >Apr 30</a>
+
+<a href="2026-04-29.html" >Apr 29</a>
+
+<a href="2026-04-28.html" >Apr 28</a>
+
+<a href="2026-04-27.html" >Apr 27</a>
+
+<a href="2026-04-26.html" >Apr 26</a>
+
+<a href="2026-04-25.html" >Apr 25</a>
+
+<a href="2026-04-24.html" >Apr 24</a>
+
+<a href="2026-04-23.html" >Apr 23</a>
+
+<a href="2026-04-22.html" >Apr 22</a>
+
+<a href="2026-04-21.html" >Apr 21</a>
+
+<a href="2026-04-20.html" class="active">Apr 20</a>
+
+</div>
+
+
+<div class="audio-player">
+  <h3>🎧 Morning Briefing</h3>
+  <audio controls preload="none">
+    <source src="audio/2026-04-20-morning.mp3" type="audio/mpeg">
+  </audio>
+</div>
+
+
+<div class="controls">
+  <label>Source:</label>
+  <button class="filter-btn active" data-source="all">All</button>
+  <button class="filter-btn" data-source="github_trending">GitHub</button>
+  <button class="filter-btn" data-source="watchlist_twitter">Twitter</button>
+  <button class="filter-btn" data-source="hf_papers">Papers</button>
+  <button class="filter-btn" data-source="show_hn">HN</button>
+  <button class="filter-btn" data-source="github_releases">Releases</button>
+  <label style="margin-left: 12px;">Sort:</label>
+  <select class="sort-select" id="sort-by">
+    <option value="score-desc">Score ↓</option>
+    <option value="score-asc">Score ↑</option>
+    <option value="source">Source</option>
+    <option value="title">Title A-Z</option>
+  </select>
+  <input type="text" class="search-input" id="search" placeholder="Search...">
+  <span class="stats" id="stats"></span>
+</div>
+
+<div class="items-container" id="items">
+
+<div class="item" data-source="github_trending" data-score="0.992" data-title="jamiepine / voicebox">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/jamiepine/voicebox" target="_blank">jamiepine / voicebox</a></div>
+    <span class="score score-high">99</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">Voicebox is an open-source voice synthesis studio. This directly enables the 'AI voice caller' product feature, allowing for unique, high-quality, and customizable voice interactions for property inquiries and sales. This can differentiate the compan</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.959" data-title="dora-rs / dora">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/dora-rs/dora" target="_blank">dora-rs / dora</a></div>
+    <span class="score score-high">96</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">DORA's low-latency, composable, and distributed dataflow capabilities are directly applicable to building a unique real estate tech stack. For VR tours and 3D maps, it can orchestrate real-time data streams from spatial sensors or user interactions, </div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.9" data-title="Beyond Prompts: Unconditional 3D Inversion for Out-of-Distribution Shapes">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.14914" target="_blank">Beyond Prompts: Unconditional 3D Inversion for Out-of-Distribution Shapes</a></div>
+    <span class="score score-high">90</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">This paper directly addresses a critical challenge in text-to-3D generation, which is fundamental for creating and manipulating 3D content for VR tours and 3D maps. Overcoming the 'collapse' of text-driven inversion for out-of-distribution shapes wou</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.81" data-title="Qwen3.5-Omni Technical Report">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.15804" target="_blank">Qwen3.5-Omni Technical Report</a></div>
+    <span class="score score-high">81</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">Qwen3.5-Omni's robust omni-modality, especially its audio-visual capabilities and massive context length, directly enables a breakthrough in 3D/voice/spatial experiences for property sales. It can power highly realistic, context-aware AI voice caller</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.739" data-title="openai / openai-agents-python">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/openai/openai-agents-python" target="_blank">openai / openai-agents-python</a></div>
+    <span class="score score-mid">74</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">This framework for multi-agent workflows directly enhances the AI voice caller and WhatsApp bot capabilities. By orchestrating multiple agents, it can create more sophisticated, context-aware, and personalized interactions for property inquiries, sch</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.739" data-title="bytedance / deer-flow">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/bytedance/deer-flow" target="_blank">bytedance / deer-flow</a></div>
+    <span class="score score-mid">74</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">Deer-Flow's SuperAgent harness, with its long-horizon task handling, sandboxes, and subagents, directly enhances our AI voice caller and WhatsApp bot capabilities. It allows for more complex, multi-step interactions, enabling the bots to research pro</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.739" data-title="onlook-dev / onlook">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/onlook-dev/onlook" target="_blank">onlook-dev / onlook</a></div>
+    <span class="score score-mid">74</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">While not directly a 3D/voice/spatial breakthrough, an AI-first design tool for React apps, especially one that allows visual building and editing, could significantly accelerate the development of the VR tour interfaces, 3D map overlays, and WhatsAp</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.739" data-title="superradcompany / microsandbox">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/superradcompany/microsandbox" target="_blank">superradcompany / microsandbox</a></div>
+    <span class="score score-mid">74</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">Microsandbox, while not directly 3D/voice/spatial, significantly enhances the development and deployment of AI agents for the AI voice caller and WhatsApp bot. Secure, local, and programmable sandboxes allow for rapid iteration, testing, and deployme</div>
+  
+</div>
+
+<div class="item" data-source="github_releases" data-score="0.67" data-title="anthropics/claude-code v2.1.114">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.114" target="_blank">anthropics/claude-code v2.1.114</a></div>
+    <span class="score score-mid">67</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_releases">github_releases</span>
+  </div>
+  
+  <div class="item-why">While not directly real estate specific, an AI coding tool that significantly boosts dev velocity (8 devs shipping like 40) is a massive competitive advantage. It allows the CTO's team to iterate faster on their unique 3D/voice/spatial features, effe</div>
+  
+</div>
+
+<div class="item" data-source="github_releases" data-score="0.67" data-title="anthropics/claude-code v2.1.113">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.113" target="_blank">anthropics/claude-code v2.1.113</a></div>
+    <span class="score score-mid">67</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_releases">github_releases</span>
+  </div>
+  
+  <div class="item-why">This is an AI coding tool, which directly impacts dev velocity. A CTO building a complex real estate tech company with VR tours, 3D maps, and AI voice callers needs to maximize their engineering team's output. If this tool can make 8 devs ship like 4</div>
+  
+</div>
+
+<div class="item" data-source="github_releases" data-score="0.67" data-title="anthropics/claude-code v2.1.112">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.112" target="_blank">anthropics/claude-code v2.1.112</a></div>
+    <span class="score score-mid">67</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_releases">github_releases</span>
+  </div>
+  
+  <div class="item-why">While not directly a 3D/voice/spatial breakthrough, a fix for 'claude-opus-4-7 is temporarily unavailable' for auto mode directly impacts developer velocity. If Claude-code is used for code generation, debugging, or even generating scripts for AI voi</div>
+  
+</div>
+
+<div class="item" data-source="github_releases" data-score="0.67" data-title="anthropics/claude-code v2.1.111">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.111" target="_blank">anthropics/claude-code v2.1.111</a></div>
+    <span class="score score-mid">67</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_releases">github_releases</span>
+  </div>
+  
+  <div class="item-why">As a CTO, an AI coding tool like Claude Opus 4.7 with tunable speed vs. intelligence directly impacts dev velocity. If it significantly boosts the productivity of 8 developers, allowing them to ship at a rate closer to 40, it's a massive competitive </div>
+  
+</div>
+
+<div class="item" data-source="github_releases" data-score="0.67" data-title="anthropics/claude-code v2.1.110">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.110" target="_blank">anthropics/claude-code v2.1.110</a></div>
+    <span class="score score-mid">67</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_releases">github_releases</span>
+  </div>
+  
+  <div class="item-why">Claude-code, as an AI coding tool, directly impacts dev velocity. If it significantly accelerates the development of 3D maps, VR tours, AI voice callers, and WhatsApp bots, it allows a smaller team to achieve a higher output of unique features. This </div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@NoamShazeer: Huge congrats to the team on an amazing model.  Thousands of contributors.  Billions of use cases.  Feeling the AGI! htt...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/NoamShazeer/status/1991050754581541217" target="_blank">@NoamShazeer: Huge congrats to the team on an amazing model.  Thousands of contributors.  Billions of use cases.  Feeling the AGI! htt...</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Tweet from a prominent AI researcher about a new model, relevant to foundation models and potentially AI voice/generative AI.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@NoamShazeer: An updated Gemini 3 Deep Think is out today:
+📈 Achieves SOTA on ARC-AGI-2, MMMU-Pro, and HLE. 
+🥇Gold-medal level on Phys...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/NoamShazeer/status/2021988459519652089" target="_blank">@NoamShazeer: An updated Gemini 3 Deep Think is out today:
+📈 Achieves SOTA on ARC-AGI-2, MMMU-Pro, and HLE. 
+🥇Gold-medal level on Phys...</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Foundation models are medium relevance. Gemini 3 is a foundation model.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@rasbt: Components of a coding agent: a little write-up on the building blocks behind coding agents, from repo context and tool ...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/rasbt/status/2040423398824698310" target="_blank">@rasbt: Components of a coding agent: a little write-up on the building blocks behind coding agents, from repo context and tool ...</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">The company uses AI voice callers and a WhatsApp bot, suggesting an interest in agent frameworks and AI coding tools for development.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@skirano: The new model from Meta, Muse Spark, is pretty good at converting images to code! https://t.co/Q97xiGUzPb">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/skirano/status/2041920891072700631" target="_blank">@skirano: The new model from Meta, Muse Spark, is pretty good at converting images to code! https://t.co/Q97xiGUzPb</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">AI coding tools are medium relevance.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@rasbt: Oh wow, Mamba-3 is here! 
+For me, the most interesting use case of Mamba and Mamba-likes are the recent transformer atte...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/rasbt/status/2034088726997893168" target="_blank">@rasbt: Oh wow, Mamba-3 is here! 
+For me, the most interesting use case of Mamba and Mamba-likes are the recent transformer atte...</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Mamba-3 is a foundation model, relevant to AI voice caller and potentially other AI features.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@simonw: Since Anthropic publish their system prompts we can generate a diff between Claude Opus 4.6 and 4.7 - here are my notes ...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/simonw/status/2045655052548022690" target="_blank">@simonw: Since Anthropic publish their system prompts we can generate a diff between Claude Opus 4.6 and 4.7 - here are my notes ...</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Discusses foundation models (Claude Opus), relevant for AI voice caller and general AI strategy.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@alexalbert__: I've found Managed Agents to somehow be both the fastest way to hack together a weekend agent project and the most robus...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/alexalbert__/status/2041941720611614786" target="_blank">@alexalbert__: I've found Managed Agents to somehow be both the fastest way to hack together a weekend agent project and the most robus...</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Managed Agents are relevant to the CTO's interest in AI voice callers and potentially other AI-driven products, falling under agent frameworks.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@NoamShazeer: Last week we upgraded Gemini 3 Deep Think. Today, we’re shipping the core intelligence that makes those breakthroughs po...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/NoamShazeer/status/2024519946764734574" target="_blank">@NoamShazeer: Last week we upgraded Gemini 3 Deep Think. Today, we’re shipping the core intelligence that makes those breakthroughs po...</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Gemini 3.1 Pro is a foundation model, relevant for AI voice caller and other AI features.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@NoamShazeer: Gemini 3 Flash is live. ⚡️
+We’ve packed Gemini 3’s Pro-grade reasoning into a leaner model with Flash-level latency, eff...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/NoamShazeer/status/2001325642374418496" target="_blank">@NoamShazeer: Gemini 3 Flash is live. ⚡️
+We’ve packed Gemini 3’s Pro-grade reasoning into a leaner model with Flash-level latency, eff...</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">New foundation model with low latency could be relevant for AI voice caller.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@skirano: Ok this is actually pretty impressive and I truly didn't see any model doing this before or being able to do it to this ...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/skirano/status/2041926272226398393" target="_blank">@skirano: Ok this is actually pretty impressive and I truly didn't see any model doing this before or being able to do it to this ...</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">AI coding tools are medium relevance, but the specific application of converting images to code with asset extraction could be useful for UI development in 3D/VR contexts.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@ClementDelangue: Hugging Face is becoming the platform for agents to use and build AI. Now they can call 1M HF spaces to do everything th...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/ClementDelangue/status/2045640413256564818" target="_blank">@ClementDelangue: Hugging Face is becoming the platform for agents to use and build AI. Now they can call 1M HF spaces to do everything th...</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Hugging Face as a platform for AI agents is relevant to the CTO's interest in AI voice callers and potentially other AI-driven features, falling into the 'agent frameworks' category.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@skirano: If you thought the Chinese models were good, just wait a couple of months, now that all the distillation poisoning has b...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/skirano/status/2039731046497870190" target="_blank">@skirano: If you thought the Chinese models were good, just wait a couple of months, now that all the distillation poisoning has b...</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Discusses foundation models and AI coding tools, relevant to a tech CTO.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@lilianweng: On-policy distillation provides an elegant way to use the teacher model as a process reward model to provide dense rewar...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/lilianweng/status/1982862795961184572" target="_blank">@lilianweng: On-policy distillation provides an elegant way to use the teacher model as a process reward model to provide dense rewar...</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">AI coding tools / foundation models - relevant for AI voice caller and general AI strategy.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@skirano: Anthropic making a Lovable/Bolt/v0/Figma Make clone and calling it Design is peak Anthropic.">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/skirano/status/2045192705941106992" target="_blank">@skirano: Anthropic making a Lovable/Bolt/v0/Figma Make clone and calling it Design is peak Anthropic.</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Mentions Anthropic and AI design tools, relevant to a CTO interested in AI coding tools and foundation models.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@NoamShazeer: Gemini 3 Deep Think mode is live for Ultra users today. When using parallel lines of thought in this mode, Gemini shows ...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/NoamShazeer/status/1996679619031060680" target="_blank">@NoamShazeer: Gemini 3 Deep Think mode is live for Ultra users today. When using parallel lines of thought in this mode, Gemini shows ...</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Gemini 3 Deep Think mode is a foundation model update, relevant for AI voice caller and potential future AI features.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.6" data-title="@mckaywrigley: gpt-5.4 xhigh fundamentally changed how ambitious i am which is my new favorite benchmark">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/mckaywrigley/status/2034399600325587452" target="_blank">@mckaywrigley: gpt-5.4 xhigh fundamentally changed how ambitious i am which is my new favorite benchmark</a></div>
+    <span class="score score-mid">60</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Mentions a new GPT model, relevant to foundation models and AI coding tools.</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.584" data-title="jingyaogong / minimind">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/jingyaogong/minimind" target="_blank">jingyaogong / minimind</a></div>
+    <span class="score score-mid">58</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">While training a small GPT model is a useful AI tool, its direct application to creating something no other real estate tech company has in the 3D/voice/spatial domain for property sales is not immediately clear. It's a foundational AI capability, bu</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.584" data-title="badlogic / pi-mono">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/badlogic/pi-mono" target="_blank">badlogic / pi-mono</a></div>
+    <span class="score score-mid">58</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">While an AI agent toolkit could enhance the WhatsApp bot or internal tools, its primary benefit isn't a direct breakthrough in 3D/voice/spatial tech for property sales. It's a useful AI tool, but lacks a specific real estate angle that differentiates</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.551" data-title="HKUDS / DeepTutor">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/HKUDS/DeepTutor" target="_blank">HKUDS / DeepTutor</a></div>
+    <span class="score score-mid">55</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">Agent framework, potentially useful for AI voice caller or WhatsApp bot.</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.551" data-title="tw93 / Kaku">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/tw93/Kaku" target="_blank">tw93 / Kaku</a></div>
+    <span class="score score-mid">55</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">AI coding tool, potentially useful for development workflow.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.53" data-title="@skirano: People seem to forget that while GPT-5.4 rivals and even surpasses Opus 4.6 in certain tasks, it's still just the size o...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/skirano/status/2041914402849333386" target="_blank">@skirano: People seem to forget that while GPT-5.4 rivals and even surpasses Opus 4.6 in certain tasks, it's still just the size o...</a></div>
+    <span class="score score-mid">53</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">This tweet discusses the relative capabilities and sizes of different foundation models (GPT-5.4, Opus 4.6, Sonnet). While these models are highly relevant to the AI voice caller and potentially other AI features, the tweet itself doesn't offer a spe</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.5" data-title="Learning Adaptive Reasoning Paths for Efficient Visual Reasoning">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.14568" target="_blank">Learning Adaptive Reasoning Paths for Efficient Visual Reasoning</a></div>
+    <span class="score score-mid">50</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">Visual reasoning models could be relevant for 3D maps or VR tours, but it's a research paper, not a direct tool.</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.5" data-title="GTA-2: Benchmarking General Tool Agents from Atomic Tool-Use to Open-Ended Workflows">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.15715" target="_blank">GTA-2: Benchmarking General Tool Agents from Atomic Tool-Use to Open-Ended Workflows</a></div>
+    <span class="score score-mid">50</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">Agent frameworks are medium relevance. The company uses AI voice caller, which could be enhanced by general tool agents.</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.5" data-title="Cut Your Losses! Learning to Prune Paths Early for Efficient Parallel Reasoning">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.16029" target="_blank">Cut Your Losses! Learning to Prune Paths Early for Efficient Parallel Reasoning</a></div>
+    <span class="score score-mid">50</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">Relates to efficient reasoning in large models, which could be relevant for AI voice caller or other AI components, but not directly high-priority tech.</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.5" data-title="PersonaVLM: Long-Term Personalized Multimodal LLMs">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.13074" target="_blank">PersonaVLM: Long-Term Personalized Multimodal LLMs</a></div>
+    <span class="score score-mid">50</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">Multimodal LLMs are a foundation model, but the personalization aspect is less directly relevant to the CTO's current high-priority tech stack.</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.5" data-title="Reinforcement Learning via Value Gradient Flow">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.14265" target="_blank">Reinforcement Learning via Value Gradient Flow</a></div>
+    <span class="score score-mid">50</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">Reinforcement learning is a foundation model technique, relevant for AI voice caller and potentially other AI features.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.5" data-title="@karpathy: LLM Knowledge Bases
+
+Something I'm finding very useful recently: using LLMs to build personal knowledge bases for variou...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/karpathy/status/2039805659525644595" target="_blank">@karpathy: LLM Knowledge Bases
+
+Something I'm finding very useful recently: using LLMs to build personal knowledge bases for variou...</a></div>
+    <span class="score score-mid">50</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">LLM knowledge bases are a foundation model application, relevant for a CTO using AI voice callers and WhatsApp bots.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.5" data-title="@karpathy: - Drafted a blog post
+- Used an LLM to meticulously improve the argument over 4 hours.
+- Wow, feeling great, it’s so con...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/karpathy/status/2037921699824607591" target="_blank">@karpathy: - Drafted a blog post
+- Used an LLM to meticulously improve the argument over 4 hours.
+- Wow, feeling great, it’s so con...</a></div>
+    <span class="score score-mid">50</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">LLM usage for argument improvement is relevant to AI coding tools/foundation models, but not directly to the CTO's core high-priority areas.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.5" data-title="@karpathy: Farzapedia, personal wikipedia of Farza, good example following my Wiki LLM tweet.
+
+I really like this approach to perso...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/karpathy/status/2040572272944324650" target="_blank">@karpathy: Farzapedia, personal wikipedia of Farza, good example following my Wiki LLM tweet.
+
+I really like this approach to perso...</a></div>
+    <span class="score score-mid">50</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Farzapedia is a personal knowledge base, likely using LLMs, which aligns with the company's use of AI for a WhatsApp bot and general AI strategy.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.5" data-title="@rasbt: A visual guide to modern LLM attention variants, all in one place: https://t.co/vy1DAEKXU8">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/rasbt/status/2035700481033482688" target="_blank">@rasbt: A visual guide to modern LLM attention variants, all in one place: https://t.co/vy1DAEKXU8</a></div>
+    <span class="score score-mid">50</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">LLM attention variants are relevant to AI coding tools and foundation models, which are medium priority.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.5" data-title="@NousResearch: Hermes Agent 🤝 Ollama">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/NousResearch/status/2045304840645939304" target="_blank">@NousResearch: Hermes Agent 🤝 Ollama</a></div>
+    <span class="score score-mid">50</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Agent framework (Hermes Agent) and foundation model (Ollama) are medium relevance for a CTO building AI products.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.5" data-title="@alexalbert__: New version of Claude Code in the desktop app dropped today with tons of new features and performance improvements. 
+
+Be...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/alexalbert__/status/2044144091395699055" target="_blank">@alexalbert__: New version of Claude Code in the desktop app dropped today with tons of new features and performance improvements. 
+
+Be...</a></div>
+    <span class="score score-mid">50</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">AI coding tools are medium relevance for a CTO.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.5" data-title="@alexalbert__: Highly recommend reading this guest post by theoretical physicist Matthew Schwartz to get a sense of how AI is helping s...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/alexalbert__/status/2036232980059062550" target="_blank">@alexalbert__: Highly recommend reading this guest post by theoretical physicist Matthew Schwartz to get a sense of how AI is helping s...</a></div>
+    <span class="score score-mid">50</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">AI helping science is a general AI topic, not directly related to specific high-score categories like generative 3D or spatial computing, but still relevant to a CTO interested in AI capabilities.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.5" data-title="@alexalbert__: Everyone with a vision can produce very high-quality designs now (with a lil help from Claude)">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/alexalbert__/status/2045165630421364853" target="_blank">@alexalbert__: Everyone with a vision can produce very high-quality designs now (with a lil help from Claude)</a></div>
+    <span class="score score-mid">50</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">AI coding tools / foundation models for design, relevant for a tech company CTO.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.45" data-title="@goodside: One day you’ll show a kid a Pixar movie and say, “They used computers but it’s not AI,” and they won’t understand what y...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/goodside/status/2042634838692274378" target="_blank">@goodside: One day you’ll show a kid a Pixar movie and say, “They used computers but it’s not AI,” and they won’t understand what y...</a></div>
+    <span class="score score-low">45</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">This is a philosophical tweet about the future of AI in creative fields, not a specific tool or breakthrough directly applicable to 3D/voice/spatial property sales or a dev velocity tool. It's a generic trending thought, not a practical asset for bui</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.441" data-title="d2l-ai / d2l-en">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/d2l-ai/d2l-en" target="_blank">d2l-ai / d2l-en</a></div>
+    <span class="score score-low">44</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">Generic AI repo, not directly related to specific high-score categories.</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.441" data-title="alexzhang13 / rlm">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/alexzhang13/rlm" target="_blank">alexzhang13 / rlm</a></div>
+    <span class="score score-low">44</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.441" data-title="sansan0 / TrendRadar">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/sansan0/TrendRadar" target="_blank">sansan0 / TrendRadar</a></div>
+    <span class="score score-low">44</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.441" data-title="kyegomez / swarms">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/kyegomez/swarms" target="_blank">kyegomez / swarms</a></div>
+    <span class="score score-low">44</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.441" data-title="HKUDS / RAG-Anything">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/HKUDS/RAG-Anything" target="_blank">HKUDS / RAG-Anything</a></div>
+    <span class="score score-low">44</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.441" data-title="mnfst / manifest">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/mnfst/manifest" target="_blank">mnfst / manifest</a></div>
+    <span class="score score-low">44</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.441" data-title="zilliztech / claude-context">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/zilliztech/claude-context" target="_blank">zilliztech / claude-context</a></div>
+    <span class="score score-low">44</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.441" data-title="vercel-labs / portless">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/vercel-labs/portless" target="_blank">vercel-labs / portless</a></div>
+    <span class="score score-low">44</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.441" data-title="crbnos / carbon">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/crbnos/carbon" target="_blank">crbnos / carbon</a></div>
+    <span class="score score-low">44</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.441" data-title="tailcallhq / forgecode">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/tailcallhq/forgecode" target="_blank">tailcallhq / forgecode</a></div>
+    <span class="score score-low">44</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.441" data-title="containers / libkrun">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/containers/libkrun" target="_blank">containers / libkrun</a></div>
+    <span class="score score-low">44</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.43" data-title="koala73 / worldmonitor">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/koala73/worldmonitor" target="_blank">koala73 / worldmonitor</a></div>
+    <span class="score score-low">43</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">While 'AI-powered news aggregation' sounds interesting, its application to 3D/voice/spatial property sales is too tangential. This is a generic trending repo for intelligence dashboards, not a direct breakthrough for real estate tech differentiation.</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="RoboLab: A High-Fidelity Simulation Benchmark for Analysis of Task Generalist Policies">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.09860" target="_blank">RoboLab: A High-Fidelity Simulation Benchmark for Analysis of Task Generalist Policies</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Where does output diversity collapse in post-training?">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.16027" target="_blank">Where does output diversity collapse in post-training?</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Hierarchical Codec Diffusion for Video-to-Speech Generation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.15923" target="_blank">Hierarchical Codec Diffusion for Video-to-Speech Generation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="DiPO: Disentangled Perplexity Policy Optimization for Fine-grained Exploration-Exploitation Trade-Off">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.13902" target="_blank">DiPO: Disentangled Perplexity Policy Optimization for Fine-grained Exploration-Exploitation Trade-Off</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="QuantCode-Bench: A Benchmark for Evaluating the Ability of Large Language Models to Generate Executable Algorithmic Trading Strategies">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.15151" target="_blank">QuantCode-Bench: A Benchmark for Evaluating the Ability of Large Language Models to Generate Executable Algorithmic Trading Strategies</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Elucidating the SNR-t Bias of Diffusion Probabilistic Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.16044" target="_blank">Elucidating the SNR-t Bias of Diffusion Probabilistic Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Can Large Language Models Reinvent Foundational Algorithms?">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.05716" target="_blank">Can Large Language Models Reinvent Foundational Algorithms?</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="(1D) Ordered Tokens Enable Efficient Test-Time Search">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.15453" target="_blank">(1D) Ordered Tokens Enable Efficient Test-Time Search</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="EdgeDetect: Importance-Aware Gradient Compression with Homomorphic Aggregation for Federated Intrusion Detection">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.14663" target="_blank">EdgeDetect: Importance-Aware Gradient Compression with Homomorphic Aggregation for Federated Intrusion Detection</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="TwinTrack: Post-hoc Multi-Rater Calibration for Medical Image Segmentation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.15950" target="_blank">TwinTrack: Post-hoc Multi-Rater Calibration for Medical Image Segmentation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@svpino: I started letting Claude ask me questions, instead of spending too much time planning myself.
+
+This works much better fo...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/svpino/status/2045852437005869292" target="_blank">@svpino: I started letting Claude ask me questions, instead of spending too much time planning myself.
+
+This works much better fo...</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.39" data-title="@alexalbert__: Glasswing is possibly the most consequential event in the AI industry I've seen up close since joining Anthropic almost ...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/alexalbert__/status/2041578743769280811" target="_blank">@alexalbert__: Glasswing is possibly the most consequential event in the AI industry I've seen up close since joining Anthropic almost ...</a></div>
+    <span class="score score-low">39</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">This is a generic trending repo/announcement about a new AI event. While AI is relevant to the CTO's stack, there's no specific mention of 3D, voice, or spatial applications directly applicable to property sales that would differentiate their company</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.39" data-title="@OfficialLoganK: Lots of people want Gemma 4! 
+
+Google AI Edge is #8 on the iOS App Store for productivity apps. https://t.co/BFj8Ckiqm9">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/OfficialLoganK/status/2040874501777317982" target="_blank">@OfficialLoganK: Lots of people want Gemma 4! 
+
+Google AI Edge is #8 on the iOS App Store for productivity apps. https://t.co/BFj8Ckiqm9</a></div>
+    <span class="score score-low">39</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">This is a generic trending repo/news item about a Google AI product and a desire for a new Gemma model. While AI is relevant, there's no specific application to 3D, voice, spatial experiences, or direct property sales that would differentiate a real </div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.331" data-title="thunderbird / thunderbolt">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/thunderbird/thunderbolt" target="_blank">thunderbird / thunderbolt</a></div>
+    <span class="score score-low">33</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">Generic AI repo, not directly related to 3D/VR/voice AI.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.3" data-title="@karpathy: Something I've been thinking about - I am bullish on people (empowered by AI) increasing the visibility, legibility and ...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/karpathy/status/2040549459193704852" target="_blank">@karpathy: Something I've been thinking about - I am bullish on people (empowered by AI) increasing the visibility, legibility and ...</a></div>
+    <span class="score score-low">30</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Generic AI discussion, not directly related to 3D/VR/voice AI or specific frameworks.</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.221" data-title="Fincept-Corporation / FinceptTerminal">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/Fincept-Corporation/FinceptTerminal" target="_blank">Fincept-Corporation / FinceptTerminal</a></div>
+    <span class="score score-low">22</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">Generic finance application, not directly related to core tech or product areas.</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.221" data-title="paperless-ngx / paperless-ngx">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/paperless-ngx/paperless-ngx" target="_blank">paperless-ngx / paperless-ngx</a></div>
+    <span class="score score-low">22</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">Generic AI repo, not directly related to core tech stack or product vision.</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.221" data-title="yangshun / tech-interview-handbook">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/yangshun/tech-interview-handbook" target="_blank">yangshun / tech-interview-handbook</a></div>
+    <span class="score score-low">22</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">Generic coding interview prep, not directly related to the CTO's product stack or high-priority tech.</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.221" data-title="resend / react-email">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/resend/react-email" target="_blank">resend / react-email</a></div>
+    <span class="score score-low">22</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">Email building with React is a generic tool, not directly related to the CTO's high-priority areas like 3D, VR, or AI voice.</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.221" data-title="sharkdp / bat">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/sharkdp/bat" target="_blank">sharkdp / bat</a></div>
+    <span class="score score-low">22</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">Generic developer tool, not directly related to core tech or product.</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.2" data-title="PRL-Bench: A Comprehensive Benchmark Evaluating LLMs' Capabilities in Frontier Physics Research">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.15411" target="_blank">PRL-Bench: A Comprehensive Benchmark Evaluating LLMs' Capabilities in Frontier Physics Research</a></div>
+    <span class="score score-low">20</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">Generic AI research paper, not directly applicable to the company's specific tech stack or product goals.</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.2" data-title="VEFX-Bench: A Holistic Benchmark for Generic Video Editing and Visual Effects">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2604.16272" target="_blank">VEFX-Bench: A Holistic Benchmark for Generic Video Editing and Visual Effects</a></div>
+    <span class="score score-low">20</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">Generic video editing is not directly related to the company's core focus on 3D/VR real estate tech, despite the mention of AI.</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.2" data-title="@goodside: Nano Banana Pro, 4K. Prompt on cake. https://t.co/xD3TEVe0BX">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/goodside/status/1993049543945159145" target="_blank">@goodside: Nano Banana Pro, 4K. Prompt on cake. https://t.co/xD3TEVe0BX</a></div>
+    <span class="score score-low">20</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">Generic AI repo/tutorial, not directly relevant to 3D/VR/voice AI.</div>
+  
+</div>
+
+</div>
+
+
+
+<footer>frontier-feed — auto-generated daily at 06:45 IST</footer>
+
+<script>
+const items = document.querySelectorAll('.item');
+const filterBtns = document.querySelectorAll('.filter-btn');
+const sortSelect = document.getElementById('sort-by');
+const searchInput = document.getElementById('search');
+const statsEl = document.getElementById('stats');
+const container = document.getElementById('items');
+
+let activeSource = 'all';
+
+function updateStats() {
+  const visible = document.querySelectorAll('.item:not(.hidden)').length;
+  statsEl.textContent = `${visible}/${items.length}`;
+}
+
+function applyFilters() {
+  const q = searchInput.value.toLowerCase();
+  items.forEach(el => {
+    const matchSource = activeSource === 'all' || el.dataset.source === activeSource;
+    const matchSearch = !q || el.textContent.toLowerCase().includes(q);
+    el.classList.toggle('hidden', !(matchSource && matchSearch));
+  });
+  updateStats();
+}
+
+function applySort() {
+  const val = sortSelect.value;
+  const arr = Array.from(items);
+  arr.sort((a, b) => {
+    if (val === 'score-desc') return parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
+    if (val === 'score-asc') return parseFloat(a.dataset.score) - parseFloat(b.dataset.score);
+    if (val === 'source') return a.dataset.source.localeCompare(b.dataset.source);
+    if (val === 'title') return a.dataset.title.localeCompare(b.dataset.title);
+    return 0;
+  });
+  arr.forEach(el => container.appendChild(el));
+}
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeSource = btn.dataset.source;
+    applyFilters();
+  });
+});
+
+sortSelect.addEventListener('change', () => { applySort(); applyFilters(); });
+searchInput.addEventListener('input', applyFilters);
+updateStats();
+</script>
+</body>
+</html>

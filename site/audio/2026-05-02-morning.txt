@@ -1,0 +1,19 @@
+Good morning Anshul, here's what matters today.
+
+First up, we have "code-review-graph" from tirth8205. This is a Python project that builds a local knowledge graph of your codebase, specifically for Claude Code. The big win here is massive token savings: 6.8x fewer tokens on code reviews and up to 49x on daily coding tasks, because Claude only reads what's relevant. For PropViz, this could be a game-changer for our internal dev efficiency, especially as we scale our AI-assisted coding practices. Imagine the cost savings and speed improvements on our engineering side.
+
+Moving on, there's "copyparty" by 9001. This is a highly portable, all-in-one file server written in Python, offering accelerated resumable uploads, deduplication, WebDAV, SFTP, FTP, and even a media indexer with thumbnails. While it might seem like a generic file server, its portability and feature set could be incredibly useful for internal data sharing and deployment scenarios, particularly in environments where we need quick, robust file transfer solutions without heavy infrastructure.
+
+Also worth noting is "AI-Trader" from HKUDS. This project promises 100% fully-automated, agent-native trading. While we're not directly in the trading space, the underlying agentic architecture and automation principles are very relevant to how we might develop more sophisticated, autonomous agents for property market analysis or even for automating parts of our internal operations. It's a good example of advanced agent design in action.
+
+Closely related is Microsoft's "qlib," an AI-oriented Quant investment platform. Qlib uses AI to empower quantitative research, from idea exploration to production implementation. This is another strong signal in the AI agent space, showing how large-scale data and AI can be harnessed for complex decision-making. We should keep an eye on its architectural patterns for potential applications in property valuation modeling or market trend prediction.
+
+Then there's "ouroboros" by Q00, described as an "Agent OS" that advocates for specifying rather than prompting. This is a fascinating shift in how we interact with AI agents, moving towards more structured, declarative instructions. For PropViz, this could mean more reliable and predictable AI behavior in our applications, reducing the ambiguity often associated with prompt engineering and leading to more robust AI features.
+
+Shifting gears slightly, we have "modelcontextprotocol" from Perplexity AI. This is their official MCP server implementation for the Perplexity API Platform, written in TypeScript. It highlights the growing importance of standardized protocols for AI model interaction and context management. As we integrate more diverse AI models into PropViz, understanding and potentially leveraging such protocols could streamline our multi-model architecture.
+
+Similarly, "Personal_AI_Infrastructure" by danielmiessler, also in TypeScript, focuses on agentic AI infrastructure designed to magnify human capabilities. This aligns perfectly with our philosophy at PropViz: using AI to empower our users and internal teams. Exploring how this infrastructure is built could provide valuable insights for our own AI platform development, especially in creating more intelligent, assistive tools.
+
+Finally, a couple of Rust projects focused on token management and model discovery. "tokscale" by junhoyeo is a CLI tool for tracking token usage across a wide array of LLMs, including Claude Code and others. Given our increasing reliance on these models, a robust token tracking solution is crucial for cost management and performance optimization. And "llmfit" by AlexsJones helps you find which LLMs run on your specific hardware with just one command. This is incredibly useful for optimizing our inference pipelines and making informed decisions about model deployment, ensuring we get the most out of our compute resources.
+
+That's your briefing. Have a good one.
