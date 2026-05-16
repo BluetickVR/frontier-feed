@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontier Feed — Anshul's AI & 3D Intel</title>
+<style>
+  :root { --bg: #0a0a0a; --card: #141414; --border: #222; --text: #e0e0e0; --dim: #888; --accent: #4f9cf5; --high: #22c55e; --mid: #eab308; --low: #6b7280; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); max-width: 800px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { color: var(--dim); font-size: 0.85rem; margin-bottom: 20px; }
+
+  /* Controls bar */
+  .controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .controls label { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+  .filter-btn { background: none; border: 1px solid var(--border); color: var(--dim); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+  .sort-select { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
+  .search-input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 4px; font-size: 0.85rem; width: 180px; }
+  .search-input::placeholder { color: var(--dim); }
+  .stats { font-size: 0.75rem; color: var(--dim); margin-left: auto; }
+
+  /* Date nav */
+  .date-nav { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .date-nav a { color: var(--accent); text-decoration: none; font-size: 0.8rem; padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; }
+  .date-nav a.active { background: var(--accent); color: #000; }
+
+  /* Audio */
+  .audio-player { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 20px; }
+  .audio-player h3 { font-size: 0.9rem; margin-bottom: 8px; }
+  .audio-player audio { width: 100%; height: 36px; }
+
+  /* Items */
+  .items-container { }
+  .item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; transition: opacity 0.15s; }
+  .item.hidden { display: none; }
+  .item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .item-title { font-size: 0.95rem; font-weight: 500; flex: 1; }
+  .item-title a { color: var(--text); text-decoration: none; }
+  .item-title a:hover { color: var(--accent); }
+  .score { font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .score-high { background: #22c55e22; color: var(--high); }
+  .score-mid { background: #eab30822; color: var(--mid); }
+  .score-low { background: #6b728022; color: var(--low); }
+  .item-meta { font-size: 0.8rem; color: var(--dim); margin-top: 6px; display: flex; gap: 8px; align-items: center; }
+  .source-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 3px; background: #ffffff10; }
+  .source-tag.s-github_trending { border-left: 2px solid #f0883e; }
+  .source-tag.s-watchlist_twitter { border-left: 2px solid #1d9bf0; }
+  .source-tag.s-hf_papers { border-left: 2px solid #ff9d00; }
+  .source-tag.s-show_hn { border-left: 2px solid #ff6600; }
+  .source-tag.s-github_releases { border-left: 2px solid #8b5cf6; }
+  .item-why { font-size: 0.85rem; color: var(--dim); margin-top: 8px; font-style: italic; line-height: 1.4; }
+  .empty-state { color: var(--dim); text-align: center; padding: 60px 0; }
+  footer { text-align: center; color: var(--dim); font-size: 0.75rem; margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<h1>Frontier Feed</h1>
+<p class="subtitle">AI & 3D intel — curated daily for PropViz</p>
+
+<div class="date-nav">
+
+<a href="index.html" >May 16</a>
+
+<a href="2026-05-15.html" >May 15</a>
+
+<a href="2026-05-14.html" >May 14</a>
+
+<a href="2026-05-13.html" >May 13</a>
+
+<a href="2026-05-12.html" >May 12</a>
+
+<a href="2026-05-11.html" >May 11</a>
+
+<a href="2026-05-10.html" >May 10</a>
+
+<a href="2026-05-09.html" >May 09</a>
+
+<a href="2026-05-08.html" class="active">May 08</a>
+
+<a href="2026-05-07.html" >May 07</a>
+
+<a href="2026-05-06.html" >May 06</a>
+
+<a href="2026-05-05.html" >May 05</a>
+
+<a href="2026-05-04.html" >May 04</a>
+
+<a href="2026-05-03.html" >May 03</a>
+
+</div>
+
+
+
+<div class="controls">
+  <label>Source:</label>
+  <button class="filter-btn active" data-source="all">All</button>
+  <button class="filter-btn" data-source="github_trending">GitHub</button>
+  <button class="filter-btn" data-source="watchlist_twitter">Twitter</button>
+  <button class="filter-btn" data-source="hf_papers">Papers</button>
+  <button class="filter-btn" data-source="show_hn">HN</button>
+  <button class="filter-btn" data-source="github_releases">Releases</button>
+  <label style="margin-left: 12px;">Sort:</label>
+  <select class="sort-select" id="sort-by">
+    <option value="score-desc">Score ↓</option>
+    <option value="score-asc">Score ↑</option>
+    <option value="source">Source</option>
+    <option value="title">Title A-Z</option>
+  </select>
+  <input type="text" class="search-input" id="search" placeholder="Search...">
+  <span class="stats" id="stats"></span>
+</div>
+
+<div class="items-container" id="items">
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="datawhalechina / hello-agents">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/datawhalechina/hello-agents" target="_blank">datawhalechina / hello-agents</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="PaddlePaddle / PaddleOCR">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/PaddlePaddle/PaddleOCR" target="_blank">PaddlePaddle / PaddleOCR</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="vllm-project / vllm-ascend">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/vllm-project/vllm-ascend" target="_blank">vllm-project / vllm-ascend</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="anthropics / claude-plugins-official">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/anthropics/claude-plugins-official" target="_blank">anthropics / claude-plugins-official</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="colbymchenry / codegraph">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/colbymchenry/codegraph" target="_blank">colbymchenry / codegraph</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="ant-design / ant-design">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/ant-design/ant-design" target="_blank">ant-design / ant-design</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="earendil-works / pi">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/earendil-works/pi" target="_blank">earendil-works / pi</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="ChromeDevTools / chrome-devtools-mcp">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/ChromeDevTools/chrome-devtools-mcp" target="_blank">ChromeDevTools / chrome-devtools-mcp</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="CopilotKit / CopilotKit">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/CopilotKit/CopilotKit" target="_blank">CopilotKit / CopilotKit</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="anomalyco / opentui">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/anomalyco/opentui" target="_blank">anomalyco / opentui</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="rohitg00 / agentmemory">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/rohitg00/agentmemory" target="_blank">rohitg00 / agentmemory</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="github / copilot-sdk">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/github/copilot-sdk" target="_blank">github / copilot-sdk</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="bytedance / UI-TARS-desktop">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/bytedance/UI-TARS-desktop" target="_blank">bytedance / UI-TARS-desktop</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="When to Trust Imagination: Adaptive Action Execution for World Action Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.06222" target="_blank">When to Trust Imagination: Adaptive Action Execution for World Action Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="EDU-CIRCUIT-HW: Evaluating Multimodal Large Language Models on Real-World University-Level STEM Student Handwritten Solutions">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2602.00095" target="_blank">EDU-CIRCUIT-HW: Evaluating Multimodal Large Language Models on Real-World University-Level STEM Student Handwritten Solutions</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Are We Making Progress in Multimodal Domain Generalization? A Comprehensive Benchmark Study">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.06643" target="_blank">Are We Making Progress in Multimodal Domain Generalization? A Comprehensive Benchmark Study</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Continuous-Time Distribution Matching for Few-Step Diffusion Distillation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.06376" target="_blank">Continuous-Time Distribution Matching for Few-Step Diffusion Distillation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="A^2TGPO: Agentic Turn-Group Policy Optimization with Adaptive Turn-level Clipping">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.06200" target="_blank">A^2TGPO: Agentic Turn-Group Policy Optimization with Adaptive Turn-level Clipping</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="SwiftI2V: Efficient High-Resolution Image-to-Video Generation via Conditional Segment-wise Generation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.06356" target="_blank">SwiftI2V: Efficient High-Resolution Image-to-Video Generation via Conditional Segment-wise Generation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Recovering Hidden Reward in Diffusion-Based Policies">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.00623" target="_blank">Recovering Hidden Reward in Diffusion-Based Policies</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="TabEmbed: Benchmarking and Learning Generalist Embeddings for Tabular Understanding">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.04962" target="_blank">TabEmbed: Benchmarking and Learning Generalist Embeddings for Tabular Understanding</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Nonsense Helps: Prompt Space Perturbation Broadens Reasoning Exploration">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.05566" target="_blank">Nonsense Helps: Prompt Space Perturbation Broadens Reasoning Exploration</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="MiA-Signature: Approximating Global Activation for Long-Context Understanding">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.06416" target="_blank">MiA-Signature: Approximating Global Activation for Long-Context Understanding</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_releases" data-score="0.4" data-title="anthropics/claude-code v2.1.133">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.133" target="_blank">anthropics/claude-code v2.1.133</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_releases">github_releases</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@simonw: I'm at the Claude w/ Code event in San Francisco, and I'll be live blogging the keynote here https://t.co/6U1Amd2XSZ">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/simonw/status/2052055655230706032" target="_blank">@simonw: I'm at the Claude w/ Code event in San Francisco, and I'll be live blogging the keynote here https://t.co/6U1Amd2XSZ</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Prescriptive Scaling Laws for Data Constrained Training">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.01640" target="_blank">Prescriptive Scaling Laws for Data Constrained Training</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Generative Quantum-inspired Kolmogorov-Arnold Eigensolver">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.04604" target="_blank">Generative Quantum-inspired Kolmogorov-Arnold Eigensolver</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Beyond Semantic Similarity: Rethinking Retrieval for Agentic Search via Direct Corpus Interaction">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.05242" target="_blank">Beyond Semantic Similarity: Rethinking Retrieval for Agentic Search via Direct Corpus Interaction</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Audio-Visual Intelligence in Large Foundation Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.04045" target="_blank">Audio-Visual Intelligence in Large Foundation Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="BioTool: A Comprehensive Tool-Calling Dataset for Enhancing Biomedical Capabilities of Large Language Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.05758" target="_blank">BioTool: A Comprehensive Tool-Calling Dataset for Enhancing Biomedical Capabilities of Large Language Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="The Scaling Properties of Implicit Deductive Reasoning in Transformers">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.04330" target="_blank">The Scaling Properties of Implicit Deductive Reasoning in Transformers</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="KernelBench-X: A Comprehensive Benchmark for Evaluating LLM-Generated GPU Kernels">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.04956" target="_blank">KernelBench-X: A Comprehensive Benchmark for Evaluating LLM-Generated GPU Kernels</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Sparkle: Realizing Lively Instruction-Guided Video Background Replacement via Decoupled Guidance">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.06535" target="_blank">Sparkle: Realizing Lively Instruction-Guided Video Background Replacement via Decoupled Guidance</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="TIDE: Every Layer Knows the Token Beneath the Context">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.06216" target="_blank">TIDE: Every Layer Knows the Token Beneath the Context</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="When No Benchmark Exists: Validating Comparative LLM Safety Scoring Without Ground-Truth Labels">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2605.06652" target="_blank">When No Benchmark Exists: Validating Comparative LLM Safety Scoring Without Ground-Truth Labels</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@NousResearch: Hermes Agent just keeps getting better. https://t.co/Em53wS0w0w">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/NousResearch/status/2052532078722363803" target="_blank">@NousResearch: Hermes Agent just keeps getting better. https://t.co/Em53wS0w0w</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@simonw: We already had gemini-3.1-flash-lite-preview back on March 3rd, not clear if this new gemini-3.1-flash-lite is different...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/simonw/status/2052471470325121260" target="_blank">@simonw: We already had gemini-3.1-flash-lite-preview back on March 3rd, not clear if this new gemini-3.1-flash-lite is different...</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+</div>
+
+
+
+<footer>frontier-feed — auto-generated daily at 06:45 IST</footer>
+
+<script>
+const items = document.querySelectorAll('.item');
+const filterBtns = document.querySelectorAll('.filter-btn');
+const sortSelect = document.getElementById('sort-by');
+const searchInput = document.getElementById('search');
+const statsEl = document.getElementById('stats');
+const container = document.getElementById('items');
+
+let activeSource = 'all';
+
+function updateStats() {
+  const visible = document.querySelectorAll('.item:not(.hidden)').length;
+  statsEl.textContent = `${visible}/${items.length}`;
+}
+
+function applyFilters() {
+  const q = searchInput.value.toLowerCase();
+  items.forEach(el => {
+    const matchSource = activeSource === 'all' || el.dataset.source === activeSource;
+    const matchSearch = !q || el.textContent.toLowerCase().includes(q);
+    el.classList.toggle('hidden', !(matchSource && matchSearch));
+  });
+  updateStats();
+}
+
+function applySort() {
+  const val = sortSelect.value;
+  const arr = Array.from(items);
+  arr.sort((a, b) => {
+    if (val === 'score-desc') return parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
+    if (val === 'score-asc') return parseFloat(a.dataset.score) - parseFloat(b.dataset.score);
+    if (val === 'source') return a.dataset.source.localeCompare(b.dataset.source);
+    if (val === 'title') return a.dataset.title.localeCompare(b.dataset.title);
+    return 0;
+  });
+  arr.forEach(el => container.appendChild(el));
+}
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeSource = btn.dataset.source;
+    applyFilters();
+  });
+});
+
+sortSelect.addEventListener('change', () => { applySort(); applyFilters(); });
+searchInput.addEventListener('input', applyFilters);
+updateStats();
+</script>
+</body>
+</html>
