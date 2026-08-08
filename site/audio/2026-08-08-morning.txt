@@ -1,0 +1,23 @@
+Good morning Anshul, here's what matters today.
+
+First up, we're seeing Superlinked's SIE trending on GitHub. This is an open-source inference server and production cluster designed for all the models an agent might need. For PropViz, this could be a really interesting piece of infrastructure if we start scaling out more complex agent-based features, offering a robust way to manage and serve various AI models efficiently.
+
+Moving on, Harvey Labs is also trending, a benchmark built to evaluate and improve agent capabilities specifically for legal work. While our core focus isn't legal, the methodologies and evaluation metrics they're developing could offer insights into how we measure and enhance the performance of our own internal agents, especially those dealing with data accuracy or compliance.
+
+Also worth noting, there's a new Claude SEO project, a universal SEO skill for Claude Code with a massive set of sub-skills covering everything from technical SEO to local maps intelligence. Given our reliance on strong organic search for property listings, understanding how this Claude skill works could give us ideas for enhancing our own SEO strategies and potentially even automating parts of our content optimization.
+
+Staying with Claude, there's a fascinating project called Claude Video Vision. This is a Claude Code plugin that gives Claude the ability to watch and understand videos, complete with frame extraction and multimodal audio analysis. Imagine the possibilities for PropViz if we could feed property walkthrough videos into an AI that can automatically extract key features, identify amenities, or even flag potential issues – this is exactly the kind of innovation that could differentiate our platform.
+
+Shifting gears slightly to research papers, "GaussianSelector" is about lightweight human-guided object selection in 3D Gaussian Splatting. This is crucial for practical scene editing and embodied interaction. For us, if we're looking at more sophisticated 3D property visualizations or virtual tours, making it easier for users to interact with and select specific objects within those 3D environments could significantly improve the user experience.
+
+Another paper, "Weights or Skills?", surveys robot-learning techniques, contrasting models with baked-in competence versus agents that write their own skills. This is a fundamental discussion for our long-term AI strategy. Are we building highly specialized models, or are we aiming for more adaptable agents that can learn and refine new capabilities on the fly? Understanding this dichotomy helps us shape our R&D roadmap.
+
+Also in papers, "FactorJEPA" explores factorizing monolithic futures into layout-agent-interaction channels for crowded urban environments. This is about building more nuanced world models, especially relevant for predicting complex interactions in real-world settings like property markets. For PropViz, this could inform how we model market dynamics, user behavior, and property trends in dense urban areas, leading to more accurate predictions.
+
+"KVAE" introduces a family of tokenizers for multimodal generative models. Tokenizers are integral to latent diffusion modeling, which is a prominent paradigm for generating content. As we explore more generative AI for property descriptions, image synthesis, or even virtual staging, the efficiency and quality of our tokenization will directly impact the performance and creativity of our generative models.
+
+And finally on papers, "Activity Frames" discusses deterministic screen-activity compilation for agent memory and replay. Essentially, it's about agents remembering what a user *did*, not just what they *said*. For PropViz, this is huge. Imagine our agents learning from user interactions on the platform, not just their explicit queries, leading to much more personalized and proactive assistance for property searchers and sellers.
+
+Lastly, a quick note on releases: Anthropics has put out Claude Code v2.1.226, which includes bug fixes and reliability improvements. Always good to see continuous improvement from key partners.
+
+That's your briefing. Have a good one.
