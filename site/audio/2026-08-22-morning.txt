@@ -1,0 +1,21 @@
+Good morning Anshul, here's what matters today.
+
+First up, we're seeing Salesforce's new 'sf-skills' trending on GitHub. This is their curated collection of agent skills specifically for building AI applications, optimized for their Agentforce Vibes but compatible with all AI tools. For PropViz, this could be really interesting as we think about enhancing our internal agent capabilities or even exploring new ways to interact with our property data. It’s a good signal of how major players are structuring their AI ecosystems.
+
+Moving on, JAX, from jax-ml, is also trending. This is Google's system for composable transformations of Python and NumPy programs, allowing for differentiation, vectorization, and JIT compilation to GPUs and TPUs. Given our heavy reliance on data processing and potential for more complex models, JAX could offer significant performance improvements and flexibility for our machine learning workflows, especially as we scale.
+
+Also worth noting is FastVideo from hao-ai-lab, a unified framework for accelerated video generation. While not directly in our core business, the underlying tech for fast inference and post-training for video could have implications down the line for how we generate property tours or even internal training materials more efficiently, leveraging AI.
+
+The big one today, and there are two related items, is around Anthropic's Claude. We're seeing both 'claude-quickstarts' and 'claude-plugins-community' trending. The quickstarts are a collection of projects to help developers rapidly build deployable applications using the Claude API. The plugin community is a marketplace for Claude Cowork and Claude Code. This really underscores the growing ecosystem around Claude and how developers are leveraging it. For PropViz, it means more accessible tools and a wider range of potential integrations if we decide to deepen our reliance on Claude's capabilities, or even if we consider building our own custom plugins for internal use.
+
+Shifting gears a bit, 'tickflow-stock-panel' is an interesting open-source project from shy3130. It’s a self-hosted, zero-maintenance quant workbench for A-share stock selection, monitoring, and backtesting, driven by LLM capabilities for strategy customization and analysis. While specific to stock trading, the architecture for LLM-driven strategy customization and data integration is a pattern we should watch. It shows how LLMs are being used to empower domain-specific analytics and could inspire similar approaches for property market analysis.
+
+Another intriguing project is VoiceStudio by debpalash, an open-source, fully-local ElevenLabs alternative for voice cloning, design, video dubbing, and transcription in hundreds of languages. As we explore more multimodal interfaces or even consider personalized audio summaries for property insights, having a robust, local alternative to commercial services could be a significant advantage in terms of cost and data privacy.
+
+Finally, 'browser-harness' from browser-use is trending. This is a self-healing harness that enables LLMs to complete any task in a browser. This is a powerful concept for automating complex web-based tasks. For PropViz, imagine an LLM agent that can autonomously navigate property portals, extract data, or even perform competitive analysis without constant human intervention. It pushes the boundaries of what our internal agents could achieve.
+
+On the research front, two papers caught my eye. 'FlowEvo: Self-Evolving Agents through the Co-Evolution of Workflows and Executable Skills' talks about LLM agents that can adapt to complex tasks by constructing workflows. This is directly relevant to how we design and deploy our own internal AI agents, emphasizing the importance of agents that can learn and adapt beyond a single execution.
+
+And 'TinyCast: Probabilistic Zero-Shot Forecasting with Computed Periodicity' introduces an attention-free zero-shot forecaster. While small in parameters, its focus on identifying periodic structures for forecasting is a neat trick. For PropViz, any method that can improve our forecasting accuracy with fewer resources, especially in a zero-shot context, is worth investigating for market trend predictions.
+
+That's your briefing. Have a good one.
