@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontier Feed — Anshul's AI & 3D Intel</title>
+<style>
+  :root { --bg: #0a0a0a; --card: #141414; --border: #222; --text: #e0e0e0; --dim: #888; --accent: #4f9cf5; --high: #22c55e; --mid: #eab308; --low: #6b7280; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); max-width: 800px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { color: var(--dim); font-size: 0.85rem; margin-bottom: 20px; }
+
+  /* Controls bar */
+  .controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .controls label { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+  .filter-btn { background: none; border: 1px solid var(--border); color: var(--dim); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+  .sort-select { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
+  .search-input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 4px; font-size: 0.85rem; width: 180px; }
+  .search-input::placeholder { color: var(--dim); }
+  .stats { font-size: 0.75rem; color: var(--dim); margin-left: auto; }
+
+  /* Date nav */
+  .date-nav { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .date-nav a { color: var(--accent); text-decoration: none; font-size: 0.8rem; padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; }
+  .date-nav a.active { background: var(--accent); color: #000; }
+
+  /* Audio */
+  .audio-player { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 20px; }
+  .audio-player h3 { font-size: 0.9rem; margin-bottom: 8px; }
+  .audio-player audio { width: 100%; height: 36px; }
+
+  /* Items */
+  .items-container { }
+  .item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; transition: opacity 0.15s; }
+  .item.hidden { display: none; }
+  .item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .item-title { font-size: 0.95rem; font-weight: 500; flex: 1; }
+  .item-title a { color: var(--text); text-decoration: none; }
+  .item-title a:hover { color: var(--accent); }
+  .score { font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .score-high { background: #22c55e22; color: var(--high); }
+  .score-mid { background: #eab30822; color: var(--mid); }
+  .score-low { background: #6b728022; color: var(--low); }
+  .item-meta { font-size: 0.8rem; color: var(--dim); margin-top: 6px; display: flex; gap: 8px; align-items: center; }
+  .source-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 3px; background: #ffffff10; }
+  .source-tag.s-github_trending { border-left: 2px solid #f0883e; }
+  .source-tag.s-watchlist_twitter { border-left: 2px solid #1d9bf0; }
+  .source-tag.s-hf_papers { border-left: 2px solid #ff9d00; }
+  .source-tag.s-show_hn { border-left: 2px solid #ff6600; }
+  .source-tag.s-github_releases { border-left: 2px solid #8b5cf6; }
+  .item-why { font-size: 0.85rem; color: var(--dim); margin-top: 8px; font-style: italic; line-height: 1.4; }
+  .empty-state { color: var(--dim); text-align: center; padding: 60px 0; }
+  footer { text-align: center; color: var(--dim); font-size: 0.75rem; margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<h1>Frontier Feed</h1>
+<p class="subtitle">AI & 3D intel — curated daily for PropViz</p>
+
+<div class="date-nav">
+
+<a href="index.html" >Sep 05</a>
+
+<a href="2026-09-04.html" >Sep 04</a>
+
+<a href="2026-09-03.html" >Sep 03</a>
+
+<a href="2026-09-02.html" >Sep 02</a>
+
+<a href="2026-09-01.html" class="active">Sep 01</a>
+
+<a href="2026-08-31.html" >Aug 31</a>
+
+<a href="2026-08-30.html" >Aug 30</a>
+
+<a href="2026-08-29.html" >Aug 29</a>
+
+<a href="2026-08-28.html" >Aug 28</a>
+
+<a href="2026-08-27.html" >Aug 27</a>
+
+<a href="2026-08-26.html" >Aug 26</a>
+
+<a href="2026-08-25.html" >Aug 25</a>
+
+<a href="2026-08-24.html" >Aug 24</a>
+
+<a href="2026-08-23.html" >Aug 23</a>
+
+</div>
+
+
+
+<div class="controls">
+  <label>Source:</label>
+  <button class="filter-btn active" data-source="all">All</button>
+  <button class="filter-btn" data-source="github_trending">GitHub</button>
+  <button class="filter-btn" data-source="watchlist_twitter">Twitter</button>
+  <button class="filter-btn" data-source="hf_papers">Papers</button>
+  <button class="filter-btn" data-source="show_hn">HN</button>
+  <button class="filter-btn" data-source="github_releases">Releases</button>
+  <label style="margin-left: 12px;">Sort:</label>
+  <select class="sort-select" id="sort-by">
+    <option value="score-desc">Score ↓</option>
+    <option value="score-asc">Score ↑</option>
+    <option value="source">Source</option>
+    <option value="title">Title A-Z</option>
+  </select>
+  <input type="text" class="search-input" id="search" placeholder="Search...">
+  <span class="stats" id="stats"></span>
+</div>
+
+<div class="items-container" id="items">
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="mujocolab / mjlab">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/mujocolab/mjlab" target="_blank">mujocolab / mjlab</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="noonghunna / club-3090">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/noonghunna/club-3090" target="_blank">noonghunna / club-3090</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="inkeep / open-knowledge">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/inkeep/open-knowledge" target="_blank">inkeep / open-knowledge</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Weaving Visual Narratives: Agentic Image Bundle Composition Beyond Atomic Visual Matching">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.28695" target="_blank">Weaving Visual Narratives: Agentic Image Bundle Composition Beyond Atomic Visual Matching</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="SHAPE of Chain-of-Thought in Math Reasoning">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.28600" target="_blank">SHAPE of Chain-of-Thought in Math Reasoning</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Dynamic Important Example Mining for Reinforcement Finetuning">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.29252" target="_blank">Dynamic Important Example Mining for Reinforcement Finetuning</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="DreamX-Creator: Democratizing Native Audio-Video Generation at 2K Resolution">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.31106" target="_blank">DreamX-Creator: Democratizing Native Audio-Video Generation at 2K Resolution</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Normalized Low-Rank Adaptation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.31036" target="_blank">Normalized Low-Rank Adaptation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Matrix-Game 3.5: Enhancing Real-Time Streaming Interactive World Models with Patch Memory">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.29910" target="_blank">Matrix-Game 3.5: Enhancing Real-Time Streaming Interactive World Models with Patch Memory</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="PaperBanana-Interact: Scientific Diagram Refinement with Multi-Turn Human Feedback">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.30241" target="_blank">PaperBanana-Interact: Scientific Diagram Refinement with Multi-Turn Human Feedback</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="On the Design of Qwen3.8-Next Architecture: Evaluation, Efficiency, and Training Stability">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.30320" target="_blank">On the Design of Qwen3.8-Next Architecture: Evaluation, Efficiency, and Training Stability</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Lucida: Parse, Generate, and Place for Composable Real-to-Sim Scene Modeling">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.30821" target="_blank">Lucida: Parse, Generate, and Place for Composable Real-to-Sim Scene Modeling</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Scaffolding Foundation Models into Physical-World Agents Pushes the Frontier of Long-Horizon Navigation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.30396" target="_blank">Scaffolding Foundation Models into Physical-World Agents Pushes the Frontier of Long-Horizon Navigation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="MMMMM: A Unified Taxonomy for Investigating the Mechanisms of Multilingual MultiModal Misinformation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.29681" target="_blank">MMMMM: A Unified Taxonomy for Investigating the Mechanisms of Multilingual MultiModal Misinformation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="SpanCalib-VLM: Calibrated Hallucination Span Detection in Vision-Language Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.29974" target="_blank">SpanCalib-VLM: Calibrated Hallucination Span Detection in Vision-Language Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="ContextBias: Controlled Evaluation of Bias Persistence Under Context Shift in Text-to-Image Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.29847" target="_blank">ContextBias: Controlled Evaluation of Bias Persistence Under Context Shift in Text-to-Image Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Chain-of-Thought Faithfulness of Reasoning Models Varies with Where and How Preference Cues Are Delivered">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.29464" target="_blank">Chain-of-Thought Faithfulness of Reasoning Models Varies with Where and How Preference Cues Are Delivered</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="EvoGenUI-Bench: Evaluating LLMs as Multi-Turn Generative UI Assistants">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.29387" target="_blank">EvoGenUI-Bench: Evaluating LLMs as Multi-Turn Generative UI Assistants</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Uncertainty-Aware End-to-End AI Weather Forecasting: Disentangling Observation and Model Contributions">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.30795" target="_blank">Uncertainty-Aware End-to-End AI Weather Forecasting: Disentangling Observation and Model Contributions</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Chat-Edit-3D++: Interactive 3D and 4D Scene Editing via Large Language Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.29137" target="_blank">Chat-Edit-3D++: Interactive 3D and 4D Scene Editing via Large Language Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Super Library Agent: Joint Generation and Maintenance of Multiple Applications Beyond the Single Codebase">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.29310" target="_blank">Super Library Agent: Joint Generation and Maintenance of Multiple Applications Beyond the Single Codebase</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="SafeAtlas-VL: Beyond Binary Multimodal Safety with Large-Scale Data and Guard Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2608.29098" target="_blank">SafeAtlas-VL: Beyond Binary Multimodal Safety with Large-Scale Data and Guard Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+</div>
+
+
+
+<footer>frontier-feed — auto-generated daily at 06:45 IST</footer>
+
+<script>
+const items = document.querySelectorAll('.item');
+const filterBtns = document.querySelectorAll('.filter-btn');
+const sortSelect = document.getElementById('sort-by');
+const searchInput = document.getElementById('search');
+const statsEl = document.getElementById('stats');
+const container = document.getElementById('items');
+
+let activeSource = 'all';
+
+function updateStats() {
+  const visible = document.querySelectorAll('.item:not(.hidden)').length;
+  statsEl.textContent = `${visible}/${items.length}`;
+}
+
+function applyFilters() {
+  const q = searchInput.value.toLowerCase();
+  items.forEach(el => {
+    const matchSource = activeSource === 'all' || el.dataset.source === activeSource;
+    const matchSearch = !q || el.textContent.toLowerCase().includes(q);
+    el.classList.toggle('hidden', !(matchSource && matchSearch));
+  });
+  updateStats();
+}
+
+function applySort() {
+  const val = sortSelect.value;
+  const arr = Array.from(items);
+  arr.sort((a, b) => {
+    if (val === 'score-desc') return parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
+    if (val === 'score-asc') return parseFloat(a.dataset.score) - parseFloat(b.dataset.score);
+    if (val === 'source') return a.dataset.source.localeCompare(b.dataset.source);
+    if (val === 'title') return a.dataset.title.localeCompare(b.dataset.title);
+    return 0;
+  });
+  arr.forEach(el => container.appendChild(el));
+}
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeSource = btn.dataset.source;
+    applyFilters();
+  });
+});
+
+sortSelect.addEventListener('change', () => { applySort(); applyFilters(); });
+searchInput.addEventListener('input', applyFilters);
+updateStats();
+</script>
+</body>
+</html>
