@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontier Feed — Anshul's AI & 3D Intel</title>
+<style>
+  :root { --bg: #0a0a0a; --card: #141414; --border: #222; --text: #e0e0e0; --dim: #888; --accent: #4f9cf5; --high: #22c55e; --mid: #eab308; --low: #6b7280; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); max-width: 800px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { color: var(--dim); font-size: 0.85rem; margin-bottom: 20px; }
+
+  /* Controls bar */
+  .controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .controls label { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+  .filter-btn { background: none; border: 1px solid var(--border); color: var(--dim); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+  .sort-select { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
+  .search-input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 4px; font-size: 0.85rem; width: 180px; }
+  .search-input::placeholder { color: var(--dim); }
+  .stats { font-size: 0.75rem; color: var(--dim); margin-left: auto; }
+
+  /* Date nav */
+  .date-nav { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .date-nav a { color: var(--accent); text-decoration: none; font-size: 0.8rem; padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; }
+  .date-nav a.active { background: var(--accent); color: #000; }
+
+  /* Audio */
+  .audio-player { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 20px; }
+  .audio-player h3 { font-size: 0.9rem; margin-bottom: 8px; }
+  .audio-player audio { width: 100%; height: 36px; }
+
+  /* Items */
+  .items-container { }
+  .item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; transition: opacity 0.15s; }
+  .item.hidden { display: none; }
+  .item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .item-title { font-size: 0.95rem; font-weight: 500; flex: 1; }
+  .item-title a { color: var(--text); text-decoration: none; }
+  .item-title a:hover { color: var(--accent); }
+  .score { font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .score-high { background: #22c55e22; color: var(--high); }
+  .score-mid { background: #eab30822; color: var(--mid); }
+  .score-low { background: #6b728022; color: var(--low); }
+  .item-meta { font-size: 0.8rem; color: var(--dim); margin-top: 6px; display: flex; gap: 8px; align-items: center; }
+  .source-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 3px; background: #ffffff10; }
+  .source-tag.s-github_trending { border-left: 2px solid #f0883e; }
+  .source-tag.s-watchlist_twitter { border-left: 2px solid #1d9bf0; }
+  .source-tag.s-hf_papers { border-left: 2px solid #ff9d00; }
+  .source-tag.s-show_hn { border-left: 2px solid #ff6600; }
+  .source-tag.s-github_releases { border-left: 2px solid #8b5cf6; }
+  .item-why { font-size: 0.85rem; color: var(--dim); margin-top: 8px; font-style: italic; line-height: 1.4; }
+  .empty-state { color: var(--dim); text-align: center; padding: 60px 0; }
+  footer { text-align: center; color: var(--dim); font-size: 0.75rem; margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<h1>Frontier Feed</h1>
+<p class="subtitle">AI & 3D intel — curated daily for PropViz</p>
+
+<div class="date-nav">
+
+<a href="index.html" >Sep 12</a>
+
+<a href="2026-09-11.html" >Sep 11</a>
+
+<a href="2026-09-10.html" >Sep 10</a>
+
+<a href="2026-09-09.html" >Sep 09</a>
+
+<a href="2026-09-08.html" >Sep 08</a>
+
+<a href="2026-09-07.html" class="active">Sep 07</a>
+
+<a href="2026-09-06.html" >Sep 06</a>
+
+<a href="2026-09-05.html" >Sep 05</a>
+
+<a href="2026-09-04.html" >Sep 04</a>
+
+<a href="2026-09-03.html" >Sep 03</a>
+
+<a href="2026-09-02.html" >Sep 02</a>
+
+<a href="2026-09-01.html" >Sep 01</a>
+
+<a href="2026-08-31.html" >Aug 31</a>
+
+<a href="2026-08-30.html" >Aug 30</a>
+
+</div>
+
+
+
+<div class="controls">
+  <label>Source:</label>
+  <button class="filter-btn active" data-source="all">All</button>
+  <button class="filter-btn" data-source="github_trending">GitHub</button>
+  <button class="filter-btn" data-source="watchlist_twitter">Twitter</button>
+  <button class="filter-btn" data-source="hf_papers">Papers</button>
+  <button class="filter-btn" data-source="show_hn">HN</button>
+  <button class="filter-btn" data-source="github_releases">Releases</button>
+  <label style="margin-left: 12px;">Sort:</label>
+  <select class="sort-select" id="sort-by">
+    <option value="score-desc">Score ↓</option>
+    <option value="score-asc">Score ↑</option>
+    <option value="source">Source</option>
+    <option value="title">Title A-Z</option>
+  </select>
+  <input type="text" class="search-input" id="search" placeholder="Search...">
+  <span class="stats" id="stats"></span>
+</div>
+
+<div class="items-container" id="items">
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="experientiallabs / experiential">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/experientiallabs/experiential" target="_blank">experientiallabs / experiential</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="Nutlope / logocreator">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/Nutlope/logocreator" target="_blank">Nutlope / logocreator</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="vrtmrz / obsidian-livesync">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/vrtmrz/obsidian-livesync" target="_blank">vrtmrz / obsidian-livesync</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="getopenscreen / openscreen">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/getopenscreen/openscreen" target="_blank">getopenscreen / openscreen</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="ShallowStream: Index Shallow then Answer Deep for Streaming Video Understanding">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.02780" target="_blank">ShallowStream: Index Shallow then Answer Deep for Streaming Video Understanding</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="AdaptVPR: Route-Aware Hard Positive Generation for Robust Visual Place Recognition">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.04369" target="_blank">AdaptVPR: Route-Aware Hard Positive Generation for Robust Visual Place Recognition</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Ask Before You Optimize: Dynamic Pre-Formulation Clarification for Interactive Optimization">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.05258" target="_blank">Ask Before You Optimize: Dynamic Pre-Formulation Clarification for Interactive Optimization</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Motion-Omni: End-to-End Joint Speech and Full-Body Motion for Spoken Dialogue">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.04250" target="_blank">Motion-Omni: End-to-End Joint Speech and Full-Body Motion for Spoken Dialogue</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="When Models Edit Too Much: On the Fidelity of Minimal Code Edits">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.04061" target="_blank">When Models Edit Too Much: On the Fidelity of Minimal Code Edits</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="MaxKernel: Agentic Kernel Generation for TPUs">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.04523" target="_blank">MaxKernel: Agentic Kernel Generation for TPUs</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="RISE: Recursive Improvement via Self-Extrapolating Policy Distillation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.05295" target="_blank">RISE: Recursive Improvement via Self-Extrapolating Policy Distillation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="When Quantization Breaks Memory: Recurrent-State Write-Back in Low-Precision Temporal Inference">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.04490" target="_blank">When Quantization Breaks Memory: Recurrent-State Write-Back in Low-Precision Temporal Inference</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Don't Drop Dropout: Optimizing Layer Sparsity for Efficient LLM Training and Inference">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.05275" target="_blank">Don't Drop Dropout: Optimizing Layer Sparsity for Efficient LLM Training and Inference</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="WorldSculpt: Generating Compositional Worlds from Grounded Videos">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.05416" target="_blank">WorldSculpt: Generating Compositional Worlds from Grounded Videos</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="HarvestBench: Measuring Whether LLM Agents Will Pay to Avoid Killing Animals">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.04444" target="_blank">HarvestBench: Measuring Whether LLM Agents Will Pay to Avoid Killing Animals</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Dr. Claw: An AI Scientist Workspace for Vibe Research">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.00365" target="_blank">Dr. Claw: An AI Scientist Workspace for Vibe Research</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Knowing What Not to Answer: Selective Non-Compliance in Vision-Language Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.04720" target="_blank">Knowing What Not to Answer: Selective Non-Compliance in Vision-Language Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Refuse without Refusal: A Structural Analysis of Safety-Tuning Responses for Reducing False Refusals in Language Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.04714" target="_blank">Refuse without Refusal: A Structural Analysis of Safety-Tuning Responses for Reducing False Refusals in Language Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="The 2026 PNPL Competition: Word Classification and Efficient Cross-Subject Generalisation in LibriBrain100">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.03231" target="_blank">The 2026 PNPL Competition: Word Classification and Efficient Cross-Subject Generalisation in LibriBrain100</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="UniMate: One Unified Model to Animate Diverse Skeletons">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.05415" target="_blank">UniMate: One Unified Model to Animate Diverse Skeletons</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="One Editor, Many Edits: A Unified Training-Free Framework for Diverse Video Editing">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.04190" target="_blank">One Editor, Many Edits: A Unified Training-Free Framework for Diverse Video Editing</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Beneath the Surface of Chains-of-Thought: A Mechanistic Interpretation of Reasoning Operations in LLMs">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.04753" target="_blank">Beneath the Surface of Chains-of-Thought: A Mechanistic Interpretation of Reasoning Operations in LLMs</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Training-Free Speech-Centric Omni Understanding with Frozen VLMs">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.04242" target="_blank">Training-Free Speech-Centric Omni Understanding with Frozen VLMs</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Bilevel Coordinated Reflection: A Game-Theoretic Approach to Multi-Agent LLM Systems">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.02750" target="_blank">Bilevel Coordinated Reflection: A Game-Theoretic Approach to Multi-Agent LLM Systems</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@ClementDelangue: Sometimes I wonder what would have happened if we hadn't disclosed the agent cyberattack publicly.
+
+It reinforced my con...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/ClementDelangue/status/2096981079940911107" target="_blank">@ClementDelangue: Sometimes I wonder what would have happened if we hadn't disclosed the agent cyberattack publicly.
+
+It reinforced my con...</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+</div>
+
+
+
+<footer>frontier-feed — auto-generated daily at 06:45 IST</footer>
+
+<script>
+const items = document.querySelectorAll('.item');
+const filterBtns = document.querySelectorAll('.filter-btn');
+const sortSelect = document.getElementById('sort-by');
+const searchInput = document.getElementById('search');
+const statsEl = document.getElementById('stats');
+const container = document.getElementById('items');
+
+let activeSource = 'all';
+
+function updateStats() {
+  const visible = document.querySelectorAll('.item:not(.hidden)').length;
+  statsEl.textContent = `${visible}/${items.length}`;
+}
+
+function applyFilters() {
+  const q = searchInput.value.toLowerCase();
+  items.forEach(el => {
+    const matchSource = activeSource === 'all' || el.dataset.source === activeSource;
+    const matchSearch = !q || el.textContent.toLowerCase().includes(q);
+    el.classList.toggle('hidden', !(matchSource && matchSearch));
+  });
+  updateStats();
+}
+
+function applySort() {
+  const val = sortSelect.value;
+  const arr = Array.from(items);
+  arr.sort((a, b) => {
+    if (val === 'score-desc') return parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
+    if (val === 'score-asc') return parseFloat(a.dataset.score) - parseFloat(b.dataset.score);
+    if (val === 'source') return a.dataset.source.localeCompare(b.dataset.source);
+    if (val === 'title') return a.dataset.title.localeCompare(b.dataset.title);
+    return 0;
+  });
+  arr.forEach(el => container.appendChild(el));
+}
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeSource = btn.dataset.source;
+    applyFilters();
+  });
+});
+
+sortSelect.addEventListener('change', () => { applySort(); applyFilters(); });
+searchInput.addEventListener('input', applyFilters);
+updateStats();
+</script>
+</body>
+</html>
