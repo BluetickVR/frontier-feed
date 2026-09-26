@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontier Feed — Anshul's AI & 3D Intel</title>
+<style>
+  :root { --bg: #0a0a0a; --card: #141414; --border: #222; --text: #e0e0e0; --dim: #888; --accent: #4f9cf5; --high: #22c55e; --mid: #eab308; --low: #6b7280; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); max-width: 800px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { color: var(--dim); font-size: 0.85rem; margin-bottom: 20px; }
+
+  /* Controls bar */
+  .controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .controls label { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+  .filter-btn { background: none; border: 1px solid var(--border); color: var(--dim); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+  .sort-select { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
+  .search-input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 4px; font-size: 0.85rem; width: 180px; }
+  .search-input::placeholder { color: var(--dim); }
+  .stats { font-size: 0.75rem; color: var(--dim); margin-left: auto; }
+
+  /* Date nav */
+  .date-nav { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .date-nav a { color: var(--accent); text-decoration: none; font-size: 0.8rem; padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; }
+  .date-nav a.active { background: var(--accent); color: #000; }
+
+  /* Audio */
+  .audio-player { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 20px; }
+  .audio-player h3 { font-size: 0.9rem; margin-bottom: 8px; }
+  .audio-player audio { width: 100%; height: 36px; }
+
+  /* Items */
+  .items-container { }
+  .item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; transition: opacity 0.15s; }
+  .item.hidden { display: none; }
+  .item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .item-title { font-size: 0.95rem; font-weight: 500; flex: 1; }
+  .item-title a { color: var(--text); text-decoration: none; }
+  .item-title a:hover { color: var(--accent); }
+  .score { font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .score-high { background: #22c55e22; color: var(--high); }
+  .score-mid { background: #eab30822; color: var(--mid); }
+  .score-low { background: #6b728022; color: var(--low); }
+  .item-meta { font-size: 0.8rem; color: var(--dim); margin-top: 6px; display: flex; gap: 8px; align-items: center; }
+  .source-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 3px; background: #ffffff10; }
+  .source-tag.s-github_trending { border-left: 2px solid #f0883e; }
+  .source-tag.s-watchlist_twitter { border-left: 2px solid #1d9bf0; }
+  .source-tag.s-hf_papers { border-left: 2px solid #ff9d00; }
+  .source-tag.s-show_hn { border-left: 2px solid #ff6600; }
+  .source-tag.s-github_releases { border-left: 2px solid #8b5cf6; }
+  .item-why { font-size: 0.85rem; color: var(--dim); margin-top: 8px; font-style: italic; line-height: 1.4; }
+  .empty-state { color: var(--dim); text-align: center; padding: 60px 0; }
+  footer { text-align: center; color: var(--dim); font-size: 0.75rem; margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<h1>Frontier Feed</h1>
+<p class="subtitle">AI & 3D intel — curated daily for PropViz</p>
+
+<div class="date-nav">
+
+<a href="index.html" >Sep 26</a>
+
+<a href="2026-09-25.html" >Sep 25</a>
+
+<a href="2026-09-24.html" class="active">Sep 24</a>
+
+<a href="2026-09-23.html" >Sep 23</a>
+
+<a href="2026-09-22.html" >Sep 22</a>
+
+<a href="2026-09-21.html" >Sep 21</a>
+
+<a href="2026-09-20.html" >Sep 20</a>
+
+<a href="2026-09-19.html" >Sep 19</a>
+
+<a href="2026-09-18.html" >Sep 18</a>
+
+<a href="2026-09-17.html" >Sep 17</a>
+
+<a href="2026-09-16.html" >Sep 16</a>
+
+<a href="2026-09-15.html" >Sep 15</a>
+
+<a href="2026-09-14.html" >Sep 14</a>
+
+<a href="2026-09-13.html" >Sep 13</a>
+
+</div>
+
+
+
+<div class="controls">
+  <label>Source:</label>
+  <button class="filter-btn active" data-source="all">All</button>
+  <button class="filter-btn" data-source="github_trending">GitHub</button>
+  <button class="filter-btn" data-source="watchlist_twitter">Twitter</button>
+  <button class="filter-btn" data-source="hf_papers">Papers</button>
+  <button class="filter-btn" data-source="show_hn">HN</button>
+  <button class="filter-btn" data-source="github_releases">Releases</button>
+  <label style="margin-left: 12px;">Sort:</label>
+  <select class="sort-select" id="sort-by">
+    <option value="score-desc">Score ↓</option>
+    <option value="score-asc">Score ↑</option>
+    <option value="source">Source</option>
+    <option value="title">Title A-Z</option>
+  </select>
+  <input type="text" class="search-input" id="search" placeholder="Search...">
+  <span class="stats" id="stats"></span>
+</div>
+
+<div class="items-container" id="items">
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="spotify / portal-ai-plugins">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/spotify/portal-ai-plugins" target="_blank">spotify / portal-ai-plugins</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="op7418 / Humanizer-zh">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/op7418/Humanizer-zh" target="_blank">op7418 / Humanizer-zh</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="Fosowl / agenticSeek">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/Fosowl/agenticSeek" target="_blank">Fosowl / agenticSeek</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="aayushch / laya">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/aayushch/laya" target="_blank">aayushch / laya</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="atomicstrata / llm-wiki-compiler">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/atomicstrata/llm-wiki-compiler" target="_blank">atomicstrata / llm-wiki-compiler</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="stepfun-ai / Step-Code">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/stepfun-ai/Step-Code" target="_blank">stepfun-ai / Step-Code</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="On the Diffusibility of High-Dimensional Latents">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.28473" target="_blank">On the Diffusibility of High-Dimensional Latents</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="All modalities are equal, but video is more equal: Closing the Cross-Attention Gap in Joint Video Generation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.27901" target="_blank">All modalities are equal, but video is more equal: Closing the Cross-Attention Gap in Joint Video Generation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="PackLab: A Comprehensive Framework for Developing, Training, and Evaluating MLLMs in Robotic Bin Packing">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.23784" target="_blank">PackLab: A Comprehensive Framework for Developing, Training, and Evaluating MLLMs in Robotic Bin Packing</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Spatial-Interactor: Learning Spatial Reasoning through Interaction with the Observable Physical World">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.23038" target="_blank">Spatial-Interactor: Learning Spatial Reasoning through Interaction with the Observable Physical World</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="HappyWorld-Bench">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.24308" target="_blank">HappyWorld-Bench</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Just-in-Time Memory: Learning to Curate Task-Adaptive Memory for LLM Agents">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.27334" target="_blank">Just-in-Time Memory: Learning to Curate Task-Adaptive Memory for LLM Agents</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="EmbodiedSWE: Coding Agents for Long Horizon Dexterous Robotics">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.27308" target="_blank">EmbodiedSWE: Coding Agents for Long Horizon Dexterous Robotics</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="StudentBench: AI and human tutoring yield equivalent GRE learning gains">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.28470" target="_blank">StudentBench: AI and human tutoring yield equivalent GRE learning gains</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="MemBodied: Recurrent Associative Memory for Vision-Language-Action Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.28256" target="_blank">MemBodied: Recurrent Associative Memory for Vision-Language-Action Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="SpeakerMem-R1: Speaker-Centered Dual-Track Memory for Multi-Party Dialogue">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.26780" target="_blank">SpeakerMem-R1: Speaker-Centered Dual-Track Memory for Multi-Party Dialogue</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_releases" data-score="0.4" data-title="anthropics/claude-code v2.1.281">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/anthropics/claude-code/releases/tag/v2.1.281" target="_blank">anthropics/claude-code v2.1.281</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_releases">github_releases</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@alexalbert__: I've been on a Blender kick with Opus 5.5. Its better 3D modeling and vision mean you can build an entire world from a s...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/alexalbert__/status/2102466523164274839" target="_blank">@alexalbert__: I've been on a Blender kick with Opus 5.5. Its better 3D modeling and vision mean you can build an entire world from a s...</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@goodside: &gt; Make a 30s video about what it feels like to be you, using whatever tools you like.
+
+Claude Opus 5.5 (extra) https:...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/goodside/status/2102876925102555526" target="_blank">@goodside: &gt; Make a 30s video about what it feels like to be you, using whatever tools you like.
+
+Claude Opus 5.5 (extra) https:...</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@rasbt: The main appeal of open-source agent harnesses isn't that they are free, but that we can inspect what they are doing on ...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/rasbt/status/2102771721086673116" target="_blank">@rasbt: The main appeal of open-source agent harnesses isn't that they are free, but that we can inspect what they are doing on ...</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Self-Organizing Agent Teams Learn to Reason Together">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.22682" target="_blank">Self-Organizing Agent Teams Learn to Reason Together</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="The Linear Representation Hypothesis Needs a Group Action">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.27158" target="_blank">The Linear Representation Hypothesis Needs a Group Action</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Knowledge Pull Requests for Continual Document Authoring">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.26634" target="_blank">Knowledge Pull Requests for Continual Document Authoring</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Capable yet Parsimonious: Extracting and Characterizing Hidden Chain-of-Thought in Frontier Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.26637" target="_blank">Capable yet Parsimonious: Extracting and Characterizing Hidden Chain-of-Thought in Frontier Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="X-Planner: Event-Structured Task Planning for Embodied Intelligence">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.25187" target="_blank">X-Planner: Event-Structured Task Planning for Embodied Intelligence</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Calibration as a First-Class Criterion in LLM Evaluation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.26489" target="_blank">Calibration as a First-Class Criterion in LLM Evaluation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="FLEET: From Logits Entropy to Enhanced Trajectories in Text Generation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.27657" target="_blank">FLEET: From Logits Entropy to Enhanced Trajectories in Text Generation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="GeoPair: Geometry-Preserving Cross-Layer Factorization for Training-Free Transformer Compression">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.25963" target="_blank">GeoPair: Geometry-Preserving Cross-Layer Factorization for Training-Free Transformer Compression</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Six Layers Less: Encoder Pruning for Whisper with Label-Free Recovery">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.27980" target="_blank">Six Layers Less: Encoder Pruning for Whisper with Label-Free Recovery</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Uranus: Building the Next-Generation Simulation Infrastructure for Embodied AI">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.24815" target="_blank">Uranus: Building the Next-Generation Simulation Infrastructure for Embodied AI</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+</div>
+
+
+
+<footer>frontier-feed — auto-generated daily at 06:45 IST</footer>
+
+<script>
+const items = document.querySelectorAll('.item');
+const filterBtns = document.querySelectorAll('.filter-btn');
+const sortSelect = document.getElementById('sort-by');
+const searchInput = document.getElementById('search');
+const statsEl = document.getElementById('stats');
+const container = document.getElementById('items');
+
+let activeSource = 'all';
+
+function updateStats() {
+  const visible = document.querySelectorAll('.item:not(.hidden)').length;
+  statsEl.textContent = `${visible}/${items.length}`;
+}
+
+function applyFilters() {
+  const q = searchInput.value.toLowerCase();
+  items.forEach(el => {
+    const matchSource = activeSource === 'all' || el.dataset.source === activeSource;
+    const matchSearch = !q || el.textContent.toLowerCase().includes(q);
+    el.classList.toggle('hidden', !(matchSource && matchSearch));
+  });
+  updateStats();
+}
+
+function applySort() {
+  const val = sortSelect.value;
+  const arr = Array.from(items);
+  arr.sort((a, b) => {
+    if (val === 'score-desc') return parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
+    if (val === 'score-asc') return parseFloat(a.dataset.score) - parseFloat(b.dataset.score);
+    if (val === 'source') return a.dataset.source.localeCompare(b.dataset.source);
+    if (val === 'title') return a.dataset.title.localeCompare(b.dataset.title);
+    return 0;
+  });
+  arr.forEach(el => container.appendChild(el));
+}
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeSource = btn.dataset.source;
+    applyFilters();
+  });
+});
+
+sortSelect.addEventListener('change', () => { applySort(); applyFilters(); });
+searchInput.addEventListener('input', applyFilters);
+updateStats();
+</script>
+</body>
+</html>
