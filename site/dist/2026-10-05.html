@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontier Feed — Anshul's AI & 3D Intel</title>
+<style>
+  :root { --bg: #0a0a0a; --card: #141414; --border: #222; --text: #e0e0e0; --dim: #888; --accent: #4f9cf5; --high: #22c55e; --mid: #eab308; --low: #6b7280; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); max-width: 800px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { color: var(--dim); font-size: 0.85rem; margin-bottom: 20px; }
+
+  /* Controls bar */
+  .controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .controls label { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+  .filter-btn { background: none; border: 1px solid var(--border); color: var(--dim); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+  .sort-select { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
+  .search-input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 4px; font-size: 0.85rem; width: 180px; }
+  .search-input::placeholder { color: var(--dim); }
+  .stats { font-size: 0.75rem; color: var(--dim); margin-left: auto; }
+
+  /* Date nav */
+  .date-nav { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .date-nav a { color: var(--accent); text-decoration: none; font-size: 0.8rem; padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; }
+  .date-nav a.active { background: var(--accent); color: #000; }
+
+  /* Audio */
+  .audio-player { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 20px; }
+  .audio-player h3 { font-size: 0.9rem; margin-bottom: 8px; }
+  .audio-player audio { width: 100%; height: 36px; }
+
+  /* Items */
+  .items-container { }
+  .item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; transition: opacity 0.15s; }
+  .item.hidden { display: none; }
+  .item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .item-title { font-size: 0.95rem; font-weight: 500; flex: 1; }
+  .item-title a { color: var(--text); text-decoration: none; }
+  .item-title a:hover { color: var(--accent); }
+  .score { font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .score-high { background: #22c55e22; color: var(--high); }
+  .score-mid { background: #eab30822; color: var(--mid); }
+  .score-low { background: #6b728022; color: var(--low); }
+  .item-meta { font-size: 0.8rem; color: var(--dim); margin-top: 6px; display: flex; gap: 8px; align-items: center; }
+  .source-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 3px; background: #ffffff10; }
+  .source-tag.s-github_trending { border-left: 2px solid #f0883e; }
+  .source-tag.s-watchlist_twitter { border-left: 2px solid #1d9bf0; }
+  .source-tag.s-hf_papers { border-left: 2px solid #ff9d00; }
+  .source-tag.s-show_hn { border-left: 2px solid #ff6600; }
+  .source-tag.s-github_releases { border-left: 2px solid #8b5cf6; }
+  .item-why { font-size: 0.85rem; color: var(--dim); margin-top: 8px; font-style: italic; line-height: 1.4; }
+  .empty-state { color: var(--dim); text-align: center; padding: 60px 0; }
+  footer { text-align: center; color: var(--dim); font-size: 0.75rem; margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<h1>Frontier Feed</h1>
+<p class="subtitle">AI & 3D intel — curated daily for PropViz</p>
+
+<div class="date-nav">
+
+<a href="index.html" >Oct 10</a>
+
+<a href="2026-10-09.html" >Oct 09</a>
+
+<a href="2026-10-08.html" >Oct 08</a>
+
+<a href="2026-10-07.html" >Oct 07</a>
+
+<a href="2026-10-06.html" >Oct 06</a>
+
+<a href="2026-10-05.html" class="active">Oct 05</a>
+
+<a href="2026-10-04.html" >Oct 04</a>
+
+<a href="2026-10-03.html" >Oct 03</a>
+
+<a href="2026-10-02.html" >Oct 02</a>
+
+<a href="2026-10-01.html" >Oct 01</a>
+
+<a href="2026-09-30.html" >Sep 30</a>
+
+<a href="2026-09-29.html" >Sep 29</a>
+
+<a href="2026-09-28.html" >Sep 28</a>
+
+<a href="2026-09-27.html" >Sep 27</a>
+
+</div>
+
+
+
+<div class="controls">
+  <label>Source:</label>
+  <button class="filter-btn active" data-source="all">All</button>
+  <button class="filter-btn" data-source="github_trending">GitHub</button>
+  <button class="filter-btn" data-source="watchlist_twitter">Twitter</button>
+  <button class="filter-btn" data-source="hf_papers">Papers</button>
+  <button class="filter-btn" data-source="show_hn">HN</button>
+  <button class="filter-btn" data-source="github_releases">Releases</button>
+  <label style="margin-left: 12px;">Sort:</label>
+  <select class="sort-select" id="sort-by">
+    <option value="score-desc">Score ↓</option>
+    <option value="score-asc">Score ↑</option>
+    <option value="source">Source</option>
+    <option value="title">Title A-Z</option>
+  </select>
+  <input type="text" class="search-input" id="search" placeholder="Search...">
+  <span class="stats" id="stats"></span>
+</div>
+
+<div class="items-container" id="items">
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="achillean / shodan-python">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/achillean/shodan-python" target="_blank">achillean / shodan-python</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="VictorTaelin / OptMem">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/VictorTaelin/OptMem" target="_blank">VictorTaelin / OptMem</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="gumyr / build123d">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/gumyr/build123d" target="_blank">gumyr / build123d</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="alvr-org / ALVR">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/alvr-org/ALVR" target="_blank">alvr-org / ALVR</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="FalkorDB / FalkorDB">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/FalkorDB/FalkorDB" target="_blank">FalkorDB / FalkorDB</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="storytold / artcraft">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/storytold/artcraft" target="_blank">storytold / artcraft</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="github_trending" data-score="0.42" data-title="CluvexStudio / Aether">
+  <div class="item-header">
+    <div class="item-title"><a href="https://github.com/CluvexStudio/Aether" target="_blank">CluvexStudio / Aether</a></div>
+    <span class="score score-low">42</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-github_trending">github_trending</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Local Support Learning">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2610.02126" target="_blank">Local Support Learning</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="HelixWorld: A Real-time Interactive Audio-Visual World Model">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.38123" target="_blank">HelixWorld: A Real-time Interactive Audio-Visual World Model</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="SimuVerity: Benchmarking Agents for Engineering-Grade Simulink Model Generation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2610.02304" target="_blank">SimuVerity: Benchmarking Agents for Engineering-Grade Simulink Model Generation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="HyperBrowseComp: A Multilingual and Multimodal Stress Test for Web-Browsing Agents">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2610.03574" target="_blank">HyperBrowseComp: A Multilingual and Multimodal Stress Test for Web-Browsing Agents</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="MotorMind: Scaffolding General Vision Language Models for Zero-Shot Robot Manipulation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.38078" target="_blank">MotorMind: Scaffolding General Vision Language Models for Zero-Shot Robot Manipulation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Does Learning Protein Folding Generalize to Broader Reasoning?">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.38879" target="_blank">Does Learning Protein Folding Generalize to Broader Reasoning?</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="LexReward: A Taxonomy-Driven Reward Framework for Legal Language Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.39071" target="_blank">LexReward: A Taxonomy-Driven Reward Framework for Legal Language Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="ProAR: Learning Prospective Reasoning with Autoregressive Video Models">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2610.03664" target="_blank">ProAR: Learning Prospective Reasoning with Autoregressive Video Models</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Looping Beyond Twice: A Scalable Recipe for Looped Mixture-of-Experts">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2610.01153" target="_blank">Looping Beyond Twice: A Scalable Recipe for Looped Mixture-of-Experts</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Triadic Linear Attention: Three-Dimensional Recurrent States for Long-Context Sequence Modeling">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.36529" target="_blank">Triadic Linear Attention: Three-Dimensional Recurrent States for Long-Context Sequence Modeling</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Improving Atomic-Fact Recall via Focused Views in Unstructured Knowledge Editing">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2610.02772" target="_blank">Improving Atomic-Fact Recall via Focused Views in Unstructured Knowledge Editing</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Self-Supervised Scaling of Terminal Environments for Scientific Domains">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2610.02710" target="_blank">Self-Supervised Scaling of Terminal Environments for Scientific Domains</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="The Extender: A Log-Structured Transformer">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.32759" target="_blank">The Extender: A Log-Structured Transformer</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="EyeRobot 2.0: Active Gaze for Precise Manipulation without Wrist Cameras">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2610.03710" target="_blank">EyeRobot 2.0: Active Gaze for Precise Manipulation without Wrist Cameras</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="4DCodeBench: Benchmarking Agents on Inverse Graphics of Dynamic Scenes">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2610.03715" target="_blank">4DCodeBench: Benchmarking Agents on Inverse Graphics of Dynamic Scenes</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Tail-Influence Sampling for CVaR Policy Evaluation">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.38096" target="_blank">Tail-Influence Sampling for CVaR Policy Evaluation</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="KeyRec: Bounded Visual Memory for Streaming and Long-Video Understanding">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.32182" target="_blank">KeyRec: Bounded Visual Memory for Streaming and Long-Video Understanding</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="Where Does Retrieval-Based Open-Ended Evaluation Fail? Automatic Taxonomy Induction from Long-Form Medical Answer Factuality Verification">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.30467" target="_blank">Where Does Retrieval-Based Open-Ended Evaluation Fail? Automatic Taxonomy Induction from Long-Form Medical Answer Factuality Verification</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="RealCompanion: Benchmarking Human Understanding from Reasoning over Longitudinal Real-World Conversations">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2610.01780" target="_blank">RealCompanion: Benchmarking Human Understanding from Reasoning over Longitudinal Real-World Conversations</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="hf_papers" data-score="0.4" data-title="MinkowskiPE: Minkowski Positional Encoding for Spatiotemporal Perception">
+  <div class="item-header">
+    <div class="item-title"><a href="https://huggingface.co/papers/2609.33804" target="_blank">MinkowskiPE: Minkowski Positional Encoding for Spatiotemporal Perception</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-hf_papers">hf_papers</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@ClementDelangue: We turned Claude Code, Codex, Hermes, Pi, @opencode and other coding harnesses into RL environments. No changes to the h...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/ClementDelangue/status/2107120717980471638" target="_blank">@ClementDelangue: We turned Claude Code, Codex, Hermes, Pi, @opencode and other coding harnesses into RL environments. No changes to the h...</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@NousResearch: You can use Hermes Agent for a lot more than flight booking. Here are 326 use cases from real users:
+
+https://t.co/1XFiT...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/NousResearch/status/2107161699837231107" target="_blank">@NousResearch: You can use Hermes Agent for a lot more than flight booking. Here are 326 use cases from real users:
+
+https://t.co/1XFiT...</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+<div class="item" data-source="watchlist_twitter" data-score="0.4" data-title="@NousResearch: You should be able to use smarter models in your agent.
+You should be able to use cheaper models in your agent.
+You shou...">
+  <div class="item-header">
+    <div class="item-title"><a href="https://x.com/NousResearch/status/2107210064549343358" target="_blank">@NousResearch: You should be able to use smarter models in your agent.
+You should be able to use cheaper models in your agent.
+You shou...</a></div>
+    <span class="score score-low">40</span>
+  </div>
+  <div class="item-meta">
+    <span class="source-tag s-watchlist_twitter">watchlist_twitter</span>
+  </div>
+  
+  <div class="item-why">(scoring unavailable — defaulted)</div>
+  
+</div>
+
+</div>
+
+
+
+<footer>frontier-feed — auto-generated daily at 06:45 IST</footer>
+
+<script>
+const items = document.querySelectorAll('.item');
+const filterBtns = document.querySelectorAll('.filter-btn');
+const sortSelect = document.getElementById('sort-by');
+const searchInput = document.getElementById('search');
+const statsEl = document.getElementById('stats');
+const container = document.getElementById('items');
+
+let activeSource = 'all';
+
+function updateStats() {
+  const visible = document.querySelectorAll('.item:not(.hidden)').length;
+  statsEl.textContent = `${visible}/${items.length}`;
+}
+
+function applyFilters() {
+  const q = searchInput.value.toLowerCase();
+  items.forEach(el => {
+    const matchSource = activeSource === 'all' || el.dataset.source === activeSource;
+    const matchSearch = !q || el.textContent.toLowerCase().includes(q);
+    el.classList.toggle('hidden', !(matchSource && matchSearch));
+  });
+  updateStats();
+}
+
+function applySort() {
+  const val = sortSelect.value;
+  const arr = Array.from(items);
+  arr.sort((a, b) => {
+    if (val === 'score-desc') return parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
+    if (val === 'score-asc') return parseFloat(a.dataset.score) - parseFloat(b.dataset.score);
+    if (val === 'source') return a.dataset.source.localeCompare(b.dataset.source);
+    if (val === 'title') return a.dataset.title.localeCompare(b.dataset.title);
+    return 0;
+  });
+  arr.forEach(el => container.appendChild(el));
+}
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeSource = btn.dataset.source;
+    applyFilters();
+  });
+});
+
+sortSelect.addEventListener('change', () => { applySort(); applyFilters(); });
+searchInput.addEventListener('input', applyFilters);
+updateStats();
+</script>
+</body>
+</html>
