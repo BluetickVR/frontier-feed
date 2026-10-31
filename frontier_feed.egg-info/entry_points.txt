@@ -1,0 +1,2 @@
+[console_scripts]
+feed = feed.cli:app
