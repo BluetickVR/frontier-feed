@@ -1,0 +1,15 @@
+Good morning Anshul, here's what matters today.
+
+First up, there's a new paper on "Time Series Structure Learning with Local Causal Parent Discovery." This is important for PropViz because learning and inference on time series data, which is core to our property valuation models, always presents challenges like autocorrelated observations and distribution shifts. Understanding new approaches to manage these issues could significantly improve the accuracy and robustness of our predictions.
+
+Moving on, another interesting paper is "Teaching Vision-Language-Action Models to Stop Safely." While this sounds very robot-focused, the underlying principles of VLA models performing diverse tasks from visual observations and language instructions are relevant. For PropViz, as we explore more advanced visual analysis and user interaction, the concepts of task suppression and refusal in these models could inform how we build more robust and user-friendly AI agents for property analysis.
+
+Also worth noting is "PAD: Policy-Aware Data Valuation for Autonomous Driving." This paper discusses how scaling training demonstrations doesn't always guarantee proportional gains in end-to-end autonomous driving. For PropViz, this directly relates to how we manage and value our growing dataset of property images and market data. Understanding how to get the most impact from our data, rather than just adding more, is crucial for efficient model development and better outcomes.
+
+Shifting gears to releases, Anthropic has updated "claude-code to v2.1.330." The key change here is added sign-in to organizations managed in Anthropic's Enterprise Admin Console, which means Claude Code now applies an organization's settings and uses its resources after login. While this is primarily an enterprise feature, it signals Anthropic's continued push into corporate environments, and we should keep an eye on how these tools evolve as potential aids for our internal development.
+
+The big one today comes from Twitter. @skirano is raving about a new model, saying "This model is so so so good. They legit gave us Sonnet 5.5 that runs on 16GB of RAM lol." The excitement around a powerful model like Sonnet 5.5 running on such modest hardware is significant. This could mean more efficient local inference capabilities for complex AI tasks, which is something PropViz should absolutely explore for edge computing or cost-effective internal deployments.
+
+And finally, @ClementDelangue tweeted, "American open-source AI isn't dead yet 😝😝😝 @thinkymachines is releasing Inkling 2 Mini as apache 2.0 today and getting to the pareto frontier for open agent models." This is fantastic news for the open-source community and for us. A new, high-performance open agent model released under Apache 2.0 means we have another powerful tool to potentially integrate into our systems, offering flexibility and avoiding vendor lock-in as we continue to build out our AI capabilities.
+
+That's your briefing. Have a good one.
